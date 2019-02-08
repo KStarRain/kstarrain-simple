@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kstarrain.mapper.StudentMapper">
+
+    <select id="findStudentById" parameterType="string" resultType="com.kstarrain.pojo.Student">
+        select
+              ID as "id",
+              NAME as "name",
+              BIRTHDAY as "birthday",
+              MONEY as "money",
+              CREATE_DATE as "createDate",
+              UPDATE_DATE as "updateDate",
+              ALIVE_FLAG as "aliveFlag"
+        from
+             t_student
+        where
+             ALIVE_FLAG = '1'
+             and ID = #{id}
+    </select>
+
+    <select id="findAllStudent" resultType="com.kstarrain.pojo.Student">
+        select
+              ID as "id",
+              NAME as "name",
+              BIRTHDAY as "birthday",
+              MONEY as "money",
+              CREATE_DATE as "createDate",
+              UPDATE_DATE as "updateDate",
+              ALIVE_FLAG as "aliveFlag"
+        from
+              t_student
+        where
+              ALIVE_FLAG = '1'
+    </select>
+
+    <insert id="insertStudent" parameterType="com.kstarrain.pojo.Student">
+        insert into t_student(
+              ID,
+              NAME,
+              BIRTHDAY,
+              MONEY,
+              CREATE_DATE,
+              UPDATE_DATE,
+              ALIVE_FLAG
+        )
+        values(
+              #{id},
+              #{name},
+              #{birthday},
+              #{money},
+              #{createDate},
+              #{updateDate},
+              #{aliveFlag}
+        )
+    </insert>
+
+
+    <update id="deleteStudentById" parameterType="int">
+        update t_student
+        <set>
+            ALIVE_FLAG = '0',
+            UPDATE_DATE = SYSDATE()
+        </set>
+        where
+            ALIVE_FLAG = '1'
+            and Id = #{id}
+    </update>
+
+</mapper>
