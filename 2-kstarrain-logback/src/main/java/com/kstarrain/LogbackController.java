@@ -12,19 +12,19 @@ public class LogbackController {
 
     public static void main(String[] args) {
 
-        Logger logger = LoggerFactory.getLogger(LogbackController.class);
+        Logger log = LoggerFactory.getLogger(LogbackController.class);
 
         for (int i = 1; i <= 108; i++) {
-            logger.trace("logback print trace :"+ i);
-            logger.debug("logback print debug :"+ i);
-            logger.info("logback print info :"+ i);
-            logger.warn("logback print warn :"+ i);
+            log.trace("logback print trace :"+ i);
+            log.debug("logback print debug :"+ i);
+            log.info("logback print info :"+ i);
+            log.warn("logback print warn :"+ i);
         }
 
         try {
             throw new RuntimeException("异常");
         } catch (RuntimeException e) {
-            logger.error(e.getMessage(),e);
+            log.error(e.getMessage(),e);
         }
 
 

@@ -16,6 +16,7 @@
         <module>5-kstarrain-mybatis</module>
         <module>6-kstarrain-proxy-jdk</module>
         <module>7-kstarrain-proxy-cglib</module>
+        <module>8-kstarrain-redis</module>
     </modules>
 
 

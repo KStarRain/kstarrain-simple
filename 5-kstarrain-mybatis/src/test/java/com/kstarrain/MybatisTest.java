@@ -2,6 +2,7 @@ package com.kstarrain;
 
 import com.kstarrain.mapper.StudentMapper;
 import com.kstarrain.pojo.Student;
+import com.kstarrain.utils.TestDataUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -88,24 +89,12 @@ public class MybatisTest {
             //---------------
             StudentMapper userMapper = session.getMapper(StudentMapper.class);
 
-            Student student = new Student();
-            student.setId(UUID.randomUUID().toString().replace("-", ""));
-            student.setName("貂蝉Mm");
-            student.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1991-09-07 23:24:51"));
-            student.setMoney(new BigDecimal("1314.98"));
-            student.setCreateDate(new Date());
-            student.setUpdateDate(new Date());
-            student.setAliveFlag("1");
-
-
-            int count = userMapper.insertStudent(student);
+            int count = userMapper.insertStudent(TestDataUtils.createStudent1());
             session.commit();   //增删改，一定一定要加上commit操作
             System.out.println(count);
             //--------------
             session.close();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -148,29 +137,13 @@ public class MybatisTest {
 
             StudentMapper userMapper = session.getMapper(StudentMapper.class);
 
-            Student student = new Student();
-            student.setId(UUID.randomUUID().toString().replace("-", ""));
-            student.setId(UUID.randomUUID().toString().replace("-", ""));
-            student.setName("貂蝉Mm");
-            student.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1991-09-07 23:24:51"));
-            student.setMoney(new BigDecimal("1314.98"));
-            student.setCreateDate(new Date());
-            student.setUpdateDate(new Date());
-            student.setAliveFlag("1");
-            userMapper.insertStudent(student);
+
+            userMapper.insertStudent(TestDataUtils.createStudent1());
 
 
             int a = 5/0;
 
-            Student student2 = new Student();
-            student2.setId(UUID.randomUUID().toString().replace("-", ""));
-            student2.setName("吕布Gg");
-            student2.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1990-09-07 23:24:51"));
-            student2.setMoney(new BigDecimal("521.98"));
-            student2.setCreateDate(new Date());
-            student2.setUpdateDate(new Date());
-            student2.setAliveFlag("1");
-            userMapper.insertStudent(student2);
+            userMapper.insertStudent(TestDataUtils.createStudent2());
 
 
             session.commit();   //事务提交

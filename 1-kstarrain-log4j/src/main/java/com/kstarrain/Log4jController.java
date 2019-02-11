@@ -14,19 +14,19 @@ public class Log4jController {
 
     public static void main(String[] args) {
 
-        Logger logger = LoggerFactory.getLogger(Log4jController.class);
+        Logger log = LoggerFactory.getLogger(Log4jController.class);
 
         for (int i = 1; i <= 108; i++) {
-            logger.trace("slf4j print trace :"+ i);
-            logger.debug("slf4j print debug :"+ i);
-            logger.info("slf4j print info :"+ i);
-            logger.warn("slf4j print warn :"+ i);
+            log.trace("slf4j print trace :"+ i);
+            log.debug("slf4j print debug :"+ i);
+            log.info("slf4j print info :"+ i);
+            log.warn("slf4j print warn :"+ i);
         }
 
         try {
             throw new RuntimeException("异常");
         } catch (RuntimeException e) {
-            logger.error(e.getMessage(),e);
+            log.error(e.getMessage(),e);
         }
 
 
