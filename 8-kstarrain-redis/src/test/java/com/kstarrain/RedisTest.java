@@ -5,10 +5,12 @@ import com.kstarrain.pojo.Student;
 import com.kstarrain.utils.JedisPoolUtil;
 import com.kstarrain.utils.TestDataUtils;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.Tuple;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -142,12 +144,18 @@ public class RedisTest {
         String KEY = "key_sorted_set";
 
         try {
-            client.zadd(KEY,2,"貂蝉");
-            client.zadd(KEY,1,"吕布");
+            client.zadd(KEY,1.1,"吕布");
+            client.zadd(KEY,1.2,"貂蝉");
 
             Set<String> value = client.zrange(KEY,0,-1);
-
             System.out.println(value);
+
+            Set<Tuple> tuples = client.zrangeWithScores(KEY, 0, -1);
+            if (CollectionUtils.isNotEmpty(tuples)){
+                for (Tuple tuple : tuples) {
+                    System.out.println(tuple.getScore() + " - " + tuple.getElement());
+                }
+            }
 
 
         } catch (Exception e) {
