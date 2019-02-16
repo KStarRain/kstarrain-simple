@@ -2,20 +2,14 @@ package com.kstarrain;
 
 import com.alibaba.fastjson.JSON;
 import com.kstarrain.pojo.Student;
-import com.kstarrain.utils.JedisPoolUtil;
+import com.kstarrain.utils.JedisPoolUtils;
 import com.kstarrain.utils.TestDataUtils;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.ShardedJedis;
-import redis.clients.jedis.Tuple;
+import redis.clients.jedis.*;
 
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -23,70 +17,94 @@ import java.util.*;
  * @create: 2019-02-08 15:48
  * @description:
  */
+@Slf4j
 public class RedisTest {
 
-    private Jedis client = new Jedis("127.0.0.1", 6379);
 
-
+    /** 测试通用命令(设置key有效时间，判断key是否存在，删除key) */
     @Test
     public void testCommon() {
-
         String KEY = "key_string";
 
-        //设置过期时间
-        client.expire(KEY,10);
+        Jedis client = null;
+        try {
+            client = new Jedis("127.0.0.1", 6379);
 
-        //判断key是否存在
-        Boolean hasKey = client.exists(KEY);
-        System.out.println(hasKey);
+            //设置过期时间
+            client.expire(KEY,10);
 
-        //删除key
-        client.del(KEY);
+            //判断key是否存在
+            Boolean hasKey = client.exists(KEY);
+            System.out.println(hasKey);
 
-        client.close();
+            //删除key
+            client.del(KEY);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            client.close();
+        }
     }
-    
+
+
+    /** 测试string */
     @Test
     public void testString() {
-
         String KEY = "key_string";
 
-        //设置key-value
-        client.set(KEY, "貂蝉");
+        Jedis client = null;
+        try {
+            client = JedisPoolUtils.getJedis();
 
-        //获取key
-        String valus = client.get(KEY);
-        System.out.println(valus);
+            //设置key-value
+            client.set(KEY, "貂蝉");
 
-        client.close();
+            //获取key
+            String valus = client.get(KEY);
+            System.out.println(valus);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            client.close();
+        }
     }
 
+
+    /** 测试string */
     @Test
     public void testStudent(){
-
         String KEY = "key_student";
 
-        client.set(KEY,JSON.toJSONString(TestDataUtils.createStudent1()));
+        Jedis client = null;
+        try {
+            client = JedisPoolUtils.getJedis();
 
-        String studentJson = client.get(KEY);
-        Student student = JSON.parseObject(studentJson, Student.class);
-        System.out.println();
+            client.set(KEY,JSON.toJSONString(TestDataUtils.createStudent1()));
 
-        client.close();
+            String studentJson = client.get(KEY);
+            Student student = JSON.parseObject(studentJson, Student.class);
+            System.out.println(student);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            client.close();
+        }
     }
 
 
     /**
-     * 参考文档: https://blog.csdn.net/qq_36898043/article/details/82155202
+     *  测试list
+     *  参考文档: https://blog.csdn.net/qq_36898043/article/details/82155202
      *          https://blog.csdn.net/sengmay/article/details/54633297
      */
     @Test
     public void testList() {
-        
-        ShardedJedis client = JedisPoolUtil.instance().getResource();
         String KEY = "key_list";
 
+        Jedis client = null;
         try {
+            client = JedisPoolUtils.getJedis();
+
             //一个一个添加： 将值插入到列表头部
 //            client.lpush(KEY,"貂蝉");
             //一个一个添加： 将值插入到列表尾部
@@ -99,51 +117,62 @@ public class RedisTest {
 
             List<String> value = client.lrange(KEY, 0, -1);
             System.out.println(value);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         } finally {
-            // 业务操作完成，将连接返回给连接池
             client.close();
         }
     }
 
 
+    /** 测试set */
     @Test
     public void testSet() {
-        ShardedJedis client = JedisPoolUtil.instance().getResource();
         String KEY = "key_set";
 
+        List<String> values = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            values.add("貂蝉" + i);
+        }
+
+        Jedis client = null;
         try {
-//            client.sadd(KEY,"貂蝉");
-//            client.sadd(KEY,"吕布");
+            client = JedisPoolUtils.getJedis();
+
+            long start1 = System.currentTimeMillis();
+            for (String value : values) {
+                client.sadd(KEY,value);
+            }
+            long end1 = System.currentTimeMillis();
+            System.out.println("循环插入 " + values.size() + " 条数据共花费了 " +(end1-start1) +" 毫秒");
 
 
-            List<String> list = new ArrayList<>();
-            list.add("貂蝉");
-            list.add("吕布");
-            client.sadd(KEY,list.toArray(new String[list.size()]));
+            long start2 = System.currentTimeMillis();
+            client.sadd(KEY,values.toArray(new String[values.size()]));
+            long end2 = System.currentTimeMillis();
+            System.out.println("批量插入 " + values.size() + " 条数据共花费了 " +(end2-start2) +" 毫秒");
 
 
             Set<String> value = client.smembers(KEY);
-
             System.out.println(value);
 
-
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         } finally {
             client.close();
         }
     }
 
 
+    /** 测试sort set */
     @Test
     public void testSortedSet() {
-        ShardedJedis client = JedisPoolUtil.instance().getResource();
         String KEY = "key_sorted_set";
 
+        Jedis client = null;
         try {
+            client = JedisPoolUtils.getJedis();
+
             client.zadd(KEY,1.1,"吕布");
             client.zadd(KEY,1.2,"貂蝉");
 
@@ -156,36 +185,166 @@ public class RedisTest {
                     System.out.println(tuple.getScore() + " - " + tuple.getElement());
                 }
             }
-
-
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         } finally {
             client.close();
         }
     }
 
+
+    /** 测试hashmap */
     @Test
     public void testHashMap() {
-        ShardedJedis client = JedisPoolUtil.instance().getResource();
         String KEY = "key_hashmap";
 
+        Jedis client = null;
         try {
+            client = JedisPoolUtils.getJedis();
+
             HashMap<String, String> map = new HashMap<>();
             map.put("2018/01/01","天津");
             map.put("2018/01/02","上海");
             client.hmset(KEY,map);
 
-            Map<String, String> stringStringMap = client.hgetAll(KEY);
-
-            System.out.println(stringStringMap);
-
-
+            Map<String, String> values = client.hgetAll(KEY);
+            System.out.println(values);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         } finally {
             client.close();
         }
+    }
+
+
+    /** 测试增量同步set*/
+    @Test
+    public void testSyncSet() {
+        String KEY = "key_set";
+
+        Jedis client = null;
+        try {
+            client = JedisPoolUtils.getJedis();
+
+            /** ----- 造数据 start ----- */
+            Collection<String> oldData = new ArrayList<>();
+            oldData.add("貂蝉");
+            oldData.add("妲己");
+            client.sadd(KEY,oldData.toArray(new String[oldData.size()]));
+
+            Collection<String> newValues = new ArrayList<>();
+            newValues.add("张飞");
+            newValues.add("吕布");
+            /** ----- 造数据 end  ----- */
+
+
+            Set<String> oldValues = client.smembers(KEY);
+            // Don't have old data
+            if (CollectionUtils.isEmpty(oldValues)) {
+                client.sadd(KEY,oldValues.toArray(new String[oldValues.size()]));
+                return;
+            }
+
+            // 增加的值
+            List<String> addValues = new ArrayList<>();
+            addValues.addAll(newValues);
+            addValues.removeAll(oldValues);
+
+            // 减少的值
+            List<String> minusValues = new ArrayList<>();
+            minusValues.addAll(oldValues);
+            minusValues.removeAll(newValues);
+
+            // do add
+            if (CollectionUtils.isNotEmpty(addValues)) {
+                client.sadd(KEY,addValues.toArray(new String[addValues.size()]));
+            }
+            // do minus
+            if (CollectionUtils.isNotEmpty(minusValues)) {
+                client.srem(KEY,minusValues.toArray(new String[minusValues.size()]));
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            client.close();
+        }
+    }
+
+    /** 测试redis管道 */
+    @Test
+    public void testPipeline() throws ParseException {
+        String KEY = "key_set";
+
+        List<String> values = new ArrayList<>();
+        for (int i = 0; i < 100000; i++) {
+            values.add("貂蝉" + i);
+        }
+
+        Jedis client = null;
+        try {
+            client = JedisPoolUtils.getJedis();
+
+            long start1 = System.currentTimeMillis();
+            for (String value : values) {
+                client.sadd(KEY,value);
+            }
+            long end1 = System.currentTimeMillis();
+            System.out.println("循环单次插入 " + values.size() + " 条数据共花费了 " +(end1-start1) +" 毫秒");
+
+
+            /** 管道技术 */
+            long start2 = System.currentTimeMillis();
+            Pipeline pipelined = client.pipelined();
+            for (String value : values) {
+                pipelined.sadd(KEY,value);
+            }
+            // 同步获取所有的回应
+            pipelined.sync();
+            long end2 = System.currentTimeMillis();
+            System.out.println("管道技术插入 " + values.size() + " 条数据共花费了 " +(end2-start2) +" 毫秒");
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            client.close();
+        }
+    }
+
+
+    /** 测试redis事务
+     *  https://www.cnblogs.com/liuchuanfeng/p/7190654.html
+     * */
+    @Test
+    public void testTransaction() throws ParseException {
+        String KEY = "key_set";
+
+        String KEY_HASHMAP = "key_hashmap";
+
+        Jedis jedis = null;
+        try {
+            jedis = JedisPoolUtils.getJedis();
+
+            //监视key，当事务执行之前这个key发生了改变，事务会被打算，事务exec返回结果为null
+            jedis.watch(KEY);
+
+            //开启事务
+            Transaction tx = jedis.multi();
+
+            tx.sadd(KEY,"貂蝉");
+//            int a = 5/0;
+            tx.sadd(KEY, "吕布");
+
+            //提交事务
+            tx.exec();
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            jedis.close();
+        }
+
+
     }
 
 }

@@ -264,7 +264,7 @@ public class JdbcTest {
 
     /** 编程式事务 */
     @Test
-    public void programmingTransaction() throws ParseException {
+    public void programmingTransaction(){
 
         Connection conn = null;
         //保存点
