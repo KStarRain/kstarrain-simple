@@ -36,9 +36,9 @@ public class ConcurrentRequest {
         // 初始化商品
         initGoods();
 
-        ExecutorService executor = Executors.newFixedThreadPool(10000);
+        ExecutorService executor = Executors.newFixedThreadPool(1000);
         // 测试一万人同时抢购
-        for (int i = 1; i <= 1000; i++) {
+        for (int i = 1; i <= 10000; i++) {
             executor.execute(new GoodsController("user" + i, goodsKey, quantity));
         }
         executor.shutdown();
@@ -52,7 +52,7 @@ public class ConcurrentRequest {
         Jedis jedis = JedisPoolUtils.getJedis();
         //设置商品总库存
         jedis.set(goodsKey, String.valueOf(stock));
-        //删除抢购成功的人
+        //删除抢购成功key
         Set<String> keys = jedis.keys("concurrent:order:*");
         if (CollectionUtils.isNotEmpty(keys)){
             jedis.del(keys.toArray(new String[keys.size()]));

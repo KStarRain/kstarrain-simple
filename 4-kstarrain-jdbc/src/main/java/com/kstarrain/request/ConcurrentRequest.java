@@ -24,7 +24,7 @@ public class ConcurrentRequest {
     /** 高并发抢购测试  */
     public static void main(String[] args) {
 
-        ExecutorService executor = Executors.newFixedThreadPool(20);
+        ExecutorService executor = Executors.newFixedThreadPool(1000);
         // 测试10000人同时抢购
         for (int i = 1; i <= 10000; i++) {
             executor.execute(new GoodsController("user" + i, goodsId, quantity));
