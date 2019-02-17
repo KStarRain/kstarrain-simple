@@ -1,9 +1,9 @@
 package com.kstarrain;
 
 
-import com.kstarrain.dao.IProductDao;
-import com.kstarrain.dao.impl.ProductDaoImpl;
-import com.kstarrain.pojo.Product;
+import com.kstarrain.dao.IGoodsDao;
+import com.kstarrain.dao.impl.GoodsDaoImpl;
+import com.kstarrain.pojo.Goods;
 import com.kstarrain.utils.JDBCUtils;
 import org.junit.Test;
 
@@ -27,14 +27,14 @@ public class ConcurrentlTest {
     /** 减库存错误测试 01 */
     @Test
     public void reduceStockById_error01(){
-        IProductDao productDao = new ProductDaoImpl();
+        IGoodsDao productDao = new GoodsDaoImpl();
         Connection conn = null;
         try {
             conn = JDBCUtils.getConnection();
             conn.setAutoCommit(false);
 
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Product product = productDao.findProductById(conn, ID);
+            Goods product = productDao.findProductById(conn, ID);
             if (product == null){throw new RuntimeException("产品不存在");}
 
             if (product.getStock() > 0){
@@ -68,14 +68,14 @@ public class ConcurrentlTest {
     /** 减库存错误测试 02 */
     @Test
     public void reduceStockById_error02(){
-        IProductDao productDao = new ProductDaoImpl();
+        IGoodsDao productDao = new GoodsDaoImpl();
         Connection conn = null;
         try {
             conn = JDBCUtils.getConnection();
             conn.setAutoCommit(false);
 
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Product product = productDao.findProductById(conn, ID);
+            Goods product = productDao.findProductById(conn, ID);
             if (product == null){throw new RuntimeException("产品不存在");}
 
             if (product.getStock() > 0){
@@ -108,14 +108,14 @@ public class ConcurrentlTest {
     /** 减库存测试 01 */
     @Test
     public void reduceStockById_01(){
-        IProductDao productDao = new ProductDaoImpl();
+        IGoodsDao productDao = new GoodsDaoImpl();
         Connection conn = null;
         try {
             conn = JDBCUtils.getConnection();
             conn.setAutoCommit(false);
 
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Product product = productDao.findProductById(conn, ID);
+            Goods product = productDao.findProductById(conn, ID);
             if (product == null){throw new RuntimeException("产品不存在");}
 
             if (product.getStock() > 0){
@@ -150,14 +150,14 @@ public class ConcurrentlTest {
     /** 减库存测试 02 */
     @Test
     public void reduceStockById_02(){
-        IProductDao productDao = new ProductDaoImpl();
+        IGoodsDao productDao = new GoodsDaoImpl();
         Connection conn = null;
         try {
             conn = JDBCUtils.getConnection();
             conn.setAutoCommit(false);
 
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Product product = productDao.findProductById(conn, ID);
+            Goods product = productDao.findProductById(conn, ID);
             if (product == null){throw new RuntimeException("产品不存在");}
 
             if (product.getStock() > 0){

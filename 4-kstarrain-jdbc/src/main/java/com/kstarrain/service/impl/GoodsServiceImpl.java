@@ -1,8 +1,10 @@
 package com.kstarrain.service;
 
-import com.kstarrain.dao.IProductDao;
-import com.kstarrain.dao.impl.ProductDaoImpl;
-import com.kstarrain.pojo.Product;
+import com.kstarrain.constant.BusinessErrorCode;
+import com.kstarrain.dao.IGoodsDao;
+import com.kstarrain.dao.impl.GoodsDaoImpl;
+import com.kstarrain.exception.BusinessException;
+import com.kstarrain.pojo.Goods;
 import com.kstarrain.utils.JDBCUtils;
 
 import java.sql.Connection;
@@ -13,33 +15,49 @@ import java.sql.SQLException;
  * @create: 2019-02-16 21:35
  * @description: 高并发秒杀--基于数据库版本号的乐观锁
  */
-public class ConcurrentService  implements Runnable {
 
-    private IProductDao productDao = new ProductDaoImpl();
+public class ConcurrentService implements Runnable {
 
-    private static String ID = "d7fbbfd87a08408ba994dea6be435111";
+    private IGoodsDao goodsDao = new GoodsDaoImpl();
 
-    private static int QUANTITY = 1;
+    //用户
+    private String userName;
+    //商品
+    private String id;
+    //商品总数
+    private Integer quantity;
+
+    public ConcurrentService(String userName, String id, Integer quantity) {
+        this.userName = userName;
+        this.id = id;
+        this.quantity = quantity;
+    }
 
     @Override
     public void run() {
+        this.reduceStockById(id);
+    }
 
-        IProductDao productDao = new ProductDaoImpl();
+
+    private void reduceStockById(String id){
+
         Connection conn = null;
         try {
             conn = JDBCUtils.getConnection();
+
+            //开启事务
             conn.setAutoCommit(false);
 
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Product product = productDao.findProductById(conn, ID);
-            if (product == null){throw new RuntimeException("产品不存在");}
+            Goods goods = goodsDao.findProductById(conn, id);
+            if (goods == null){throw new BusinessException(BusinessErrorCode.BUSINESS001);}
 
             if (product.getStock() > 0){
 
                 if (product.getStock() < QUANTITY){throw new RuntimeException("采购量不能大于库存量");}
 
                 // update t_product set STOCK = STOCK - ?,VERSION = VERSION + 1 ,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ? and VERSION = ?
-                int num = productDao.reduceStockById(conn, QUANTITY, ID, product.getVersion());
+                int num = goodsDao.reduceStockById(conn, QUANTITY, ID, product.getVersion());
 
                 if (num == 0){throw new RuntimeException("抢购失败，请重新尝试");}
 
@@ -62,6 +80,7 @@ public class ConcurrentService  implements Runnable {
         }
 
 
-
     }
+
+
 }

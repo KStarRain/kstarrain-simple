@@ -8,6 +8,7 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
+import java.security.Key;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -23,30 +24,38 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class ConcurrentTest {
 
+    //商品key
+    private String goodsKey = "goods:iphone8";
+    //商品总数
+    private Integer quantity = 100;
+
+
+    /** 减库存测试 */
     @Test
-    public void test(){
+    public void reduceStockByKey(){
 
-        String GOODS_KEY = "goods:iphone8";
-        // 设置10个商品
-        String GOODS_NUMBER = "10";
+        // 初始化商品
+        initGoods();
 
-        /** 初始化商品 */
+        ExecutorService executor = Executors.newFixedThreadPool(10000);
+        // 测试一万人同时抢购
+        for (int i = 1; i <= 10000; i++) {
+            executor.execute(new ConcurrentService("user" + i, goodsKey, quantity));
+        }
+        executor.shutdown();
+    }
+
+    private void initGoods() {
+
         Jedis jedis = JedisPoolUtils.getJedis();
-        jedis.set(GOODS_KEY, GOODS_NUMBER);
+        //设置商品库存
+        jedis.set(goodsKey, quantity.toString());
         //删除抢购成功的人
         Set<String> keys = jedis.keys("goodsResult*");
         if (CollectionUtils.isNotEmpty(keys)){
             jedis.del(keys.toArray(new String[keys.size()]));
         }
         jedis.close();
-
-
-        ExecutorService executor = Executors.newFixedThreadPool(20);
-        // 测试一万人同时抢购
-        for (int i = 0; i < 10000; i++) {
-            executor.execute(new ConcurrentService("user" + i));
-        }
-        executor.shutdown();
     }
 
 }

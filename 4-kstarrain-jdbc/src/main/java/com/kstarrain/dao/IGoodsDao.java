@@ -1,6 +1,6 @@
 package com.kstarrain.dao;
 
-import com.kstarrain.pojo.Product;
+import com.kstarrain.pojo.Goods;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,9 +10,9 @@ import java.sql.SQLException;
  * @create: 2019-01-14 17:35
  * @description:
  */
-public interface IProductDao {
+public interface IGoodsDao {
 
-    Product findProductById(Connection conn, String id) throws SQLException;
+    Goods findProductById(Connection conn, String id) throws SQLException;
 
     int reduceStockById_error(Connection conn, int quantity, String id) throws SQLException;
 

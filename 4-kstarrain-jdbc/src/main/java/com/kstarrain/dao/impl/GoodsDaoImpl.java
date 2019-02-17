@@ -1,7 +1,7 @@
 package com.kstarrain.dao.impl;
 
-import com.kstarrain.dao.IProductDao;
-import com.kstarrain.pojo.Product;
+import com.kstarrain.dao.IGoodsDao;
+import com.kstarrain.pojo.Goods;
 import com.kstarrain.utils.JDBCUtils;
 
 import java.sql.Connection;
@@ -14,20 +14,20 @@ import java.sql.SQLException;
  * @create: 2019-01-14 17:36
  * @description:
  */
-public class ProductDaoImpl implements IProductDao {
+public class GoodsDaoImpl implements IGoodsDao {
 
 
 
     @Override
-    public Product findProductById(Connection conn, String id) throws SQLException {
+    public Goods findProductById(Connection conn, String id) throws SQLException {
 
-        Product product = null;
+        Goods product = null;
 
         PreparedStatement st = null;
         ResultSet rs = null;
 
         try {
-            String sql = "select * from t_product where ALIVE_FLAG = '1' and STATUS = '1' and ID = ? " ;
+            String sql = "select * from t_goods where ALIVE_FLAG = '1' and STATUS = '1' and ID = ? " ;
 
             //预加载
             st = conn.prepareStatement(sql);
@@ -38,7 +38,7 @@ public class ProductDaoImpl implements IProductDao {
 
             //处理结果集
             while (rs.next()){
-                product = new Product();
+                product = new Goods();
                 product.setId(rs.getString("ID"));
                 product.setName(rs.getString("NAME"));
                 product.setStock(rs.getInt("STOCK"));
@@ -66,7 +66,7 @@ public class ProductDaoImpl implements IProductDao {
         PreparedStatement st = null;
 
         try {
-            String sql = "update t_product set STOCK = STOCK - ?,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ?";
+            String sql = "update t_goods set STOCK = STOCK - ?,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ?";
 
             st = conn.prepareStatement(sql);
             st.setInt(1, quantity);
@@ -89,7 +89,7 @@ public class ProductDaoImpl implements IProductDao {
         PreparedStatement st = null;
 
         try {
-            String sql = "update t_product set STOCK = STOCK - ?,VERSION = VERSION + 1 ,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ? and VERSION = ?";
+            String sql = "update t_goods set STOCK = STOCK - ?,VERSION = VERSION + 1 ,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ? and VERSION = ?";
 
             st = conn.prepareStatement(sql);
             st.setInt(1, quantity);

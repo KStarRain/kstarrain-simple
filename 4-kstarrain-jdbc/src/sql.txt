@@ -14,7 +14,7 @@ CREATE TABLE `t_student` (
 CREATE TABLE `t_goods` (
   `ID` varchar(32) NOT NULL COMMENT '主键',
   `NAME` varchar(32) DEFAULT '' COMMENT '商品名字',
-  `AMOUNT` int(11) DEFAULT '0' COMMENT '商品数量',
+  `STOCK` int(11) DEFAULT '0' COMMENT '商品库存',
   `STATUS` varchar(1) NOT NULL DEFAULT '1' COMMENT '商品状态(1:上架  0:下架)',
   `CREATE_DATE` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `UPDATE_DATE` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -23,5 +23,7 @@ CREATE TABLE `t_goods` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='商品表';
 
+INSERT INTO `t_goods` (`ID`, `NAME`, `STOCK`, `STATUS`, `CREATE_DATE`, `UPDATE_DATE`, `ALIVE_FLAG`, `VERSION`)
+VALUES ('d7fbbfd87a08408ba994dea6be435111', 'iphone8', 100, '1', '2019-1-20 12:13:44', '2019-1-22 12:02:47', '1', 1);
 
 
