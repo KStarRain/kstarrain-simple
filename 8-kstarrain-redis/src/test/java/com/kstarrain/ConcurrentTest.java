@@ -1,6 +1,8 @@
 package com.kstarrain;
 
-import com.kstarrain.service.ConcurrentService;
+
+import com.kstarrain.constant.BusinessErrorCode;
+import com.kstarrain.exception.BusinessException;
 import com.kstarrain.utils.JedisPoolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -8,54 +10,139 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
-import java.security.Key;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * @author: DongYu
- * @create: 2019-02-16 19:12
- * @description: 基于watch的redis秒杀(乐观锁)
-*                https://blog.csdn.net/qq1013598664/article/details/70183908
+ * @author: Dong Yu
+ * @create: 2018-11-13 15:52
+ * @description: 并发测试  junit不支持多线程测试
  */
+
 @Slf4j
 public class ConcurrentTest {
 
     //商品key
-    private String goodsKey = "goods:iphone8";
-    //商品总数
-    private Integer quantity = 100;
+    private static String goodsKey = "concurrent:goods:iphone8";
+
+    //单次抢购数量
+    private static int quantity = 1;
 
 
-    /** 减库存测试 */
+
+    /** 减库存测试 01 */
     @Test
-    public void reduceStockByKey(){
+    public void reduceStockByKey_01(){
 
-        // 初始化商品
-        initGoods();
+        Jedis jedis = null;
 
-        ExecutorService executor = Executors.newFixedThreadPool(10000);
-        // 测试一万人同时抢购
-        for (int i = 1; i <= 10000; i++) {
-            executor.execute(new ConcurrentService("user" + i, goodsKey, quantity));
+        try {
+
+            if (quantity <= 0){throw new BusinessException(BusinessErrorCode.BUSINESS001);}
+
+            jedis = JedisPoolUtils.getJedis();
+
+            if (!jedis.exists(goodsKey)){throw new BusinessException(BusinessErrorCode.BUSINESS002);}
+
+            //监视一个key，当事务执行之前这个key发生了改变，事务会被中断，事务exec返回结果为null
+            jedis.watch(goodsKey);
+
+            //获取商品剩余存货量
+            int stock = Integer.parseInt(jedis.get(goodsKey));
+
+            if (stock > 0) {
+
+                if (quantity > stock){throw new BusinessException(BusinessErrorCode.BUSINESS003);}
+
+                // 开启事务
+                Transaction tx = jedis.multi();
+
+                /** 减库存 */
+                tx.set(goodsKey,String.valueOf(stock - quantity));
+
+                // 提交事务，如果此时监视的key被改动了，则返回null
+                List<Object> execResult = tx.exec();
+
+                if (CollectionUtils.isNotEmpty(execResult)) {//抢购成功
+
+                    /** 创建订单 */
+                    jedis.set("concurrent:order:user1" , "买家user1抢购到了" + quantity + "件商品");
+                } else {
+                    throw new BusinessException(BusinessErrorCode.BUSINESS004);
+                }
+
+            } else if (stock == 0) {
+                throw new BusinessException(BusinessErrorCode.BUSINESS005);
+            } else if (stock < 0) {
+                throw new BusinessException(BusinessErrorCode.BUSINESS000);
+            }
+        } catch (BusinessException e) {
+            System.out.println("user1 ---> " + e.getMessage());
+        }  catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            jedis.close();
         }
-        executor.shutdown();
     }
 
-    private void initGoods() {
 
-        Jedis jedis = JedisPoolUtils.getJedis();
-        //设置商品库存
-        jedis.set(goodsKey, quantity.toString());
-        //删除抢购成功的人
-        Set<String> keys = jedis.keys("goodsResult*");
-        if (CollectionUtils.isNotEmpty(keys)){
-            jedis.del(keys.toArray(new String[keys.size()]));
+
+
+    /** 减库存测试 02 */
+    @Test
+    public void reduceStockByKey_02(){
+
+        Jedis jedis = null;
+
+        try {
+
+            if (quantity <= 0){throw new BusinessException(BusinessErrorCode.BUSINESS001);}
+
+            jedis = JedisPoolUtils.getJedis();
+
+            if (!jedis.exists(goodsKey)){throw new BusinessException(BusinessErrorCode.BUSINESS002);}
+
+            //监视一个key，当事务执行之前这个key发生了改变，事务会被中断，事务exec返回结果为null
+            jedis.watch(goodsKey);
+
+            //获取商品剩余存货量
+            int stock = Integer.parseInt(jedis.get(goodsKey));
+
+            if (stock > 0) {
+
+                if (quantity > stock){throw new BusinessException(BusinessErrorCode.BUSINESS003);}
+
+                // 开启事务
+                Transaction tx = jedis.multi();
+
+                /** 减库存 */
+                tx.set(goodsKey,String.valueOf(stock - quantity));
+
+                // 提交事务，如果此时监视的key被改动了，则返回null
+                List<Object> execResult = tx.exec();
+
+                if (CollectionUtils.isNotEmpty(execResult)) {//抢购成功
+
+                    /** 创建订单 */
+                    jedis.set("concurrent:order:user2" , "买家user2抢购到了" + quantity + "件商品");
+                } else {
+                    throw new BusinessException(BusinessErrorCode.BUSINESS004);
+                }
+
+            } else if (stock == 0) {
+                throw new BusinessException(BusinessErrorCode.BUSINESS005);
+            } else if (stock < 0) {
+                throw new BusinessException(BusinessErrorCode.BUSINESS000);
+            }
+        } catch (BusinessException e) {
+            System.out.println("user1 ---> " + e.getMessage());
+        }  catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            jedis.close();
         }
-        jedis.close();
     }
+
 
 }

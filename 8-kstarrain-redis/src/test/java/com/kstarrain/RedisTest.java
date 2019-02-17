@@ -325,7 +325,7 @@ public class RedisTest {
         try {
             jedis = JedisPoolUtils.getJedis();
 
-            //监视key，当事务执行之前这个key发生了改变，事务会被打算，事务exec返回结果为null
+            //监视key，当事务执行之前这个key发生了改变，事务会被中断，事务exec返回结果为null
             jedis.watch(KEY);
 
             //开启事务

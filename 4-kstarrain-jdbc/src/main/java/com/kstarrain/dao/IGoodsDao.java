@@ -16,7 +16,7 @@ public interface IGoodsDao {
 
     int reduceStockById_error(Connection conn, int quantity, String id) throws SQLException;
 
-    int reduceStockById(Connection conn, int quantity, String id, int version) throws SQLException;
+    int reduceStockById(Connection conn, String id, int quantity, int version) throws SQLException;
 
 
 

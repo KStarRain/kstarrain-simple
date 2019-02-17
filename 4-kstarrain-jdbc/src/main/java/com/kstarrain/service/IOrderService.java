@@ -1,5 +1,6 @@
 package com.kstarrain.service;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -7,13 +8,15 @@ import java.sql.SQLException;
  * @create: 2019-02-17 12:37
  * @description:
  */
-public interface IGoodsService {
+public interface IOrderService {
 
     /**
-     * 抢购商品 减库存
+     * 生成订单
+     * @param conn
      * @param buyerId  买家id
      * @param goodsId  商品id
      * @param quantity 采购量
+     * @throws SQLException
      */
-    void reduceStockById(String buyerId, String goodsId, int quantity) throws SQLException;
+    void createOrder(Connection conn, String buyerId, String goodsId, int quantity) throws SQLException;
 }

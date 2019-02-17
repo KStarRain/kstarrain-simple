@@ -3,6 +3,7 @@ package com.kstarrain.dao.impl;
 import com.kstarrain.dao.IGoodsDao;
 import com.kstarrain.pojo.Goods;
 import com.kstarrain.utils.JDBCUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,8 +15,8 @@ import java.sql.SQLException;
  * @create: 2019-01-14 17:36
  * @description:
  */
+@Slf4j
 public class GoodsDaoImpl implements IGoodsDao {
-
 
 
     @Override
@@ -27,7 +28,7 @@ public class GoodsDaoImpl implements IGoodsDao {
         ResultSet rs = null;
 
         try {
-            String sql = "select * from t_goods where ALIVE_FLAG = '1' and STATUS = '1' and ID = ? " ;
+            String sql = "select * from t_goods where alive_flag = '1' and status = '1' and goods_id = ? " ;
 
             //预加载
             st = conn.prepareStatement(sql);
@@ -39,14 +40,14 @@ public class GoodsDaoImpl implements IGoodsDao {
             //处理结果集
             while (rs.next()){
                 product = new Goods();
-                product.setId(rs.getString("ID"));
-                product.setName(rs.getString("NAME"));
-                product.setStock(rs.getInt("STOCK"));
-                product.setStatus(rs.getString("STATUS"));
-                product.setCreateDate(rs.getTimestamp("CREATE_DATE"));
-                product.setUpdateDate(rs.getTimestamp("UPDATE_DATE"));
-                product.setAliveFlag(rs.getString("ALIVE_FLAG"));
-                product.setVersion(rs.getInt("VERSION"));
+                product.setGoodsId(rs.getString("goods_id"));
+                product.setGoodsName(rs.getString("goods_name"));
+                product.setStock(rs.getInt("stock"));
+                product.setStatus(rs.getString("status"));
+                product.setCreateDate(rs.getTimestamp("create_date"));
+                product.setUpdateDate(rs.getTimestamp("update_date"));
+                product.setAliveFlag(rs.getString("alive_flag"));
+                product.setVersion(rs.getInt("version"));
                 break;
             }
         } catch (SQLException e) {
@@ -66,7 +67,7 @@ public class GoodsDaoImpl implements IGoodsDao {
         PreparedStatement st = null;
 
         try {
-            String sql = "update t_goods set STOCK = STOCK - ?,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ?";
+            String sql = "update t_goods set stock = stock - ?,update_date = SYSDATE() where alive_flag = '1' and goods_id = ?";
 
             st = conn.prepareStatement(sql);
             st.setInt(1, quantity);
@@ -83,13 +84,13 @@ public class GoodsDaoImpl implements IGoodsDao {
     }
 
     @Override
-    public int reduceStockById(Connection conn, int quantity, String id, int version) throws SQLException {
+    public int reduceStockById(Connection conn, String id, int quantity, int version) throws SQLException {
         int num = 0;
 
         PreparedStatement st = null;
 
         try {
-            String sql = "update t_goods set STOCK = STOCK - ?,VERSION = VERSION + 1 ,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ? and VERSION = ?";
+            String sql = "update t_goods set stock = stock - ?,version = version + 1 ,update_date = SYSDATE() where alive_flag = '1' and goods_id = ? and version = ?";
 
             st = conn.prepareStatement(sql);
             st.setInt(1, quantity);
