@@ -11,27 +11,12 @@ import lombok.extern.slf4j.Slf4j;
  * @description:
  */
 @Slf4j
-public class GoodsController implements Runnable{
+public class GoodsController{
 
     private IGoodsService goodsService = new GoodsServiceImpl();
 
-    //用户id
-    private String buyerId;
-    //商品id
-    private String goodsId;
-    //采购数
-    private int quantity;
+    public void reduceStockById(String buyerId, String goodsId, int quantity){
 
-
-
-    public GoodsController(String buyerId, String goodsId, int quantity) {
-        this.buyerId = buyerId;
-        this.goodsId = goodsId;
-        this.quantity = quantity;
-    }
-
-    @Override
-    public void run() {
         try {
             goodsService.reduceStockById(buyerId,goodsId,quantity);
         } catch (BusinessException e) {
@@ -40,5 +25,6 @@ public class GoodsController implements Runnable{
             System.out.println(buyerId + " ---> " + "系统异常");
             log.error(e.getMessage(),e);
         }
+
     }
 }

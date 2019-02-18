@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public interface IGoodsDao {
 
-    Goods findProductById(Connection conn, String id) throws SQLException;
+    Goods findGoodsById(Connection conn, String id) throws SQLException;
 
     int reduceStockById_error(Connection conn, int quantity, String id) throws SQLException;
 

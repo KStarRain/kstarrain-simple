@@ -15,8 +15,8 @@ public interface IOrderService {
      * @param conn
      * @param buyerId  买家id
      * @param goodsId  商品id
-     * @param quantity 采购量
+     * @param goodsNum 商品数量
      * @throws SQLException
      */
-    void createOrder(Connection conn, String buyerId, String goodsId, int quantity) throws SQLException;
+    void createOrder(Connection conn, String buyerId, String goodsId, int goodsNum) throws SQLException;
 }

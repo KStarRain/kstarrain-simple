@@ -11,27 +11,12 @@ import lombok.extern.slf4j.Slf4j;
  * @description:
  */
 @Slf4j
-public class GoodsController implements Runnable{
+public class GoodsController{
 
     private IGoodsService goodsService = new GoodsServiceImpl();
 
-    //用户id
-    private String buyerId;
-    //商品key
-    private String goodsKey;
-    //采购数
-    private int quantity;
 
-
-
-    public GoodsController(String buyerId, String goodsKey, int quantity) {
-        this.buyerId = buyerId;
-        this.goodsKey = goodsKey;
-        this.quantity = quantity;
-    }
-
-    @Override
-    public void run() {
+    public void reduceStockByKey(String buyerId, String goodsKey, int quantity){
         try {
             goodsService.reduceStockByKey(buyerId,goodsKey,quantity);
         } catch (BusinessException e) {

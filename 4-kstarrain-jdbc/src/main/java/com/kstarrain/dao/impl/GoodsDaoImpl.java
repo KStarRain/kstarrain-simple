@@ -20,7 +20,7 @@ public class GoodsDaoImpl implements IGoodsDao {
 
 
     @Override
-    public Goods findProductById(Connection conn, String id) throws SQLException {
+    public Goods findGoodsById(Connection conn, String id) throws SQLException {
 
         Goods product = null;
 

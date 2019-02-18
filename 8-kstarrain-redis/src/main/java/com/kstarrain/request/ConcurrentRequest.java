@@ -1,6 +1,7 @@
 package com.kstarrain.request;
 
 import com.kstarrain.controller.GoodsController;
+import com.kstarrain.request.runnable.GoodsControllerRunnable;
 import com.kstarrain.utils.JedisPoolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -33,13 +34,15 @@ public class ConcurrentRequest {
     /** 高并发抢购测试  */
     public static void main(String[] args) {
 
+        GoodsController goodsController = new GoodsController();
+
         // 初始化商品
         initGoods();
 
         ExecutorService executor = Executors.newFixedThreadPool(1000);
         // 测试一万人同时抢购
         for (int i = 1; i <= 10000; i++) {
-            executor.execute(new GoodsController("user" + i, goodsKey, quantity));
+            executor.execute(new GoodsControllerRunnable(goodsController,"user" + i, goodsKey, quantity));
         }
         executor.shutdown();
 

@@ -21,7 +21,7 @@ public class GoodsServiceImpl implements IGoodsService {
 
     private IGoodsDao goodsDao = new GoodsDaoImpl();
 
-    private IOrderService oderService = new OrderServiceImpl();
+    private IOrderService orderService = new OrderServiceImpl();
 
     @Override
     public void reduceStockById(String buyerId, String goodsId, int quantity) throws SQLException {
@@ -40,7 +40,7 @@ public class GoodsServiceImpl implements IGoodsService {
             this.reduceStockById(conn, goodsId, quantity);
 
             /** 创建订单 */
-            oderService.createOrder(conn, buyerId, goodsId, quantity);
+            orderService.createOrder(conn, buyerId, goodsId, quantity);
 
             conn.commit();
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public class GoodsServiceImpl implements IGoodsService {
     private void reduceStockById(Connection conn, String goodsId, int quantity) throws SQLException {
 
         // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-        Goods goods = goodsDao.findProductById(conn, goodsId);
+        Goods goods = goodsDao.findGoodsById(conn, goodsId);
 
         if (goods == null){throw new BusinessException(BusinessErrorCode.BUSINESS002);}
 

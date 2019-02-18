@@ -49,7 +49,7 @@ public class ConcurrentTest {
 
             /** 减库存 */
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Goods goods = goodsDao.findProductById(conn, goodsId);
+            Goods goods = goodsDao.findGoodsById(conn, goodsId);
             if (goods == null){throw new BusinessException(BusinessErrorCode.BUSINESS002);}
 
             if (goods.getStock() > 0){
@@ -90,7 +90,7 @@ public class ConcurrentTest {
             conn.setAutoCommit(false);
 
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Goods product = productDao.findProductById(conn, goodsId);
+            Goods product = productDao.findGoodsById(conn, goodsId);
             if (product == null){throw new RuntimeException("产品不存在");}
 
             if (product.getStock() > 0){
@@ -136,7 +136,7 @@ public class ConcurrentTest {
 
             /** 减库存 */
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Goods goods = goodsDao.findProductById(conn, goodsId);
+            Goods goods = goodsDao.findGoodsById(conn, goodsId);
             if (goods == null){throw new BusinessException(BusinessErrorCode.BUSINESS002);}
 
             if (goods.getStock() > 0){
@@ -187,7 +187,7 @@ public class ConcurrentTest {
 
             /** 减库存 */
             // select * from t_student where ALIVE_FLAG = '1' and ID = ?
-            Goods goods = goodsDao.findProductById(conn, goodsId);
+            Goods goods = goodsDao.findGoodsById(conn, goodsId);
             if (goods == null){throw new BusinessException(BusinessErrorCode.BUSINESS002);}
 
             if (goods.getStock() > 0){

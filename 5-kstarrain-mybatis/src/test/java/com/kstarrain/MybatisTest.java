@@ -1,5 +1,7 @@
 package com.kstarrain;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.kstarrain.mapper.StudentMapper;
 import com.kstarrain.pojo.Student;
 import com.kstarrain.utils.TestDataUtils;
@@ -21,7 +23,8 @@ import java.util.UUID;
 /**
  * @author: Dong Yu
  * @create: 2018-11-13 15:52
- * @description:
+ * @description:  https://www.jianshu.com/p/ec40a82cae28
+ *
  */
 
 
@@ -62,6 +65,8 @@ public class MybatisTest {
             SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);
             SqlSession session = factory.openSession();
 
+            List<Student> objects = session.selectList("com.kstarrain.mapper.StudentMapper.findAllStudent");
+
             StudentMapper userMapper = session.getMapper(StudentMapper.class);
             List<Student> allStudent = userMapper.findAllStudent();
 
@@ -71,6 +76,31 @@ public class MybatisTest {
 
             System.out.println(sdf.format(student.getBirthday()));
             System.out.println(sdf.format(student.getCreateDate()));
+
+            session.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void findAllStudentInPage() {
+        try {
+
+            InputStream inputStream = Resources.getResourceAsStream("mybatis/mybatis-config.xml");
+            SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);
+            SqlSession session = factory.openSession();
+
+            StudentMapper userMapper = session.getMapper(StudentMapper.class);
+
+            Page<Object> objects = PageHelper.startPage(0, 0, true);
+            List<Student> allStudent =  userMapper.findAllStudent();
+            Page<Student> page = (Page<Student>) allStudent;
+
+            System.out.println(page.getResult().size());
+
 
             session.close();
 

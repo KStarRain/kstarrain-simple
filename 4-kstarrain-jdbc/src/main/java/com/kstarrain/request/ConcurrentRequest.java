@@ -2,6 +2,8 @@ package com.kstarrain.request;
 
 
 import com.kstarrain.controller.GoodsController;
+import com.kstarrain.request.runnable.GoodsControllerRunnable;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,10 +26,13 @@ public class ConcurrentRequest {
     /** 高并发抢购测试  */
     public static void main(String[] args) {
 
+        GoodsController goodsController = new GoodsController();
+
         ExecutorService executor = Executors.newFixedThreadPool(1000);
+
         // 测试10000人同时抢购
         for (int i = 1; i <= 10000; i++) {
-            executor.execute(new GoodsController("user" + i, goodsId, quantity));
+            executor.execute(new GoodsControllerRunnable(goodsController,"user" + i, goodsId, quantity));
         }
         executor.shutdown();
 
