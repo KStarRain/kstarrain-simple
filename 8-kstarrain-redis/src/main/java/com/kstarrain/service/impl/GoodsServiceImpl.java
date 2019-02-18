@@ -18,7 +18,6 @@ import java.util.List;
  * @create: 2019-02-16 21:43
  * @description:
  */
-@Slf4j
 public class GoodsServiceImpl implements IGoodsService {
 
 
@@ -70,7 +69,6 @@ public class GoodsServiceImpl implements IGoodsService {
         }  catch (Exception e) {
             throw e;
         } finally {
-//            jedis.unwatch();
             jedis.close();
         }
 

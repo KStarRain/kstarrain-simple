@@ -1,16 +1,9 @@
 package com.kstarrain.service.impl;
 
-import com.kstarrain.constant.BusinessErrorCode;
-import com.kstarrain.dao.IGoodsDao;
 import com.kstarrain.dao.IOrderDao;
-import com.kstarrain.dao.impl.GoodsDaoImpl;
 import com.kstarrain.dao.impl.OrderDaoImpl;
-import com.kstarrain.exception.BusinessException;
-import com.kstarrain.pojo.Goods;
 import com.kstarrain.pojo.Order;
-import com.kstarrain.service.IGoodsService;
 import com.kstarrain.service.IOrderService;
-import com.kstarrain.utils.JDBCUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;

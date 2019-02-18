@@ -14,7 +14,6 @@ import java.sql.*;
  * @create: 2019-01-14 17:36
  * @description:
  */
-@Slf4j
 public class OrderDaoImpl implements IOrderDao {
 
     @Override

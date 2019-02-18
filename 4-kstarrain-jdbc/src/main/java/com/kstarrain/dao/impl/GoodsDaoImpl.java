@@ -15,7 +15,6 @@ import java.sql.SQLException;
  * @create: 2019-01-14 17:36
  * @description:
  */
-@Slf4j
 public class GoodsDaoImpl implements IGoodsDao {
 
 
