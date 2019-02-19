@@ -28,7 +28,7 @@
             <version>5.1.38</version>
         </dependency>
 
-        <!-- 分页插件 -->
+        <!-- pagehelper 分页插件 源码分析：https://blog.csdn.net/u014082617/article/details/71215539/ -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>

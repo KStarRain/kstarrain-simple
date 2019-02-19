@@ -25,9 +25,11 @@ public class JDKProxyTest {
         System.out.println(proxyStudentService.getClass().getName());
 
         System.out.println("+++++++++++++++++++++++++++++++++++");
+        //该方法上没有@Transactional注解
         proxyStudentService.insertStudent01();
 
         System.out.println("+++++++++++++++++++++++++++++++++++");
+        //该方法上带@Transactional注解
         proxyStudentService.insertStudent02();
     }
 

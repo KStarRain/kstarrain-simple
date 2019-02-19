@@ -19,7 +19,7 @@ public class JDKProxy {
     public static Object createTranactionProxy(final Object targetObj, final TransactionAspect transactionAspect){
 
         // 使用JDK的Proxy类为目标类创建代理对象
-        return Proxy.newProxyInstance(
+        Object proxy = Proxy.newProxyInstance(
                 // 目标类使用的类加载器
                 targetObj.getClass().getClassLoader(),
                 // 目标类实现的接口
@@ -52,5 +52,7 @@ public class JDKProxy {
 
 
         );
+
+        return proxy;
     }
 }
