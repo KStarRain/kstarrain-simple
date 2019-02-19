@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
 import redis.clients.jedis.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -26,23 +27,23 @@ public class RedisTest {
     public void testCommon() {
         String KEY = "key_string";
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = new Jedis("127.0.0.1", 6379);
+            jedis = new Jedis("127.0.0.1", 6379);
 
             //设置过期时间
-            client.expire(KEY,10);
+            jedis.expire(KEY,10);
 
             //判断key是否存在
-            Boolean hasKey = client.exists(KEY);
+            Boolean hasKey = jedis.exists(KEY);
             System.out.println(hasKey);
 
             //删除key
-            client.del(KEY);
+            jedis.del(KEY);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            jedis.close();
         }
     }
 
@@ -52,20 +53,20 @@ public class RedisTest {
     public void testString() {
         String KEY = "key_string";
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
             //设置key-value
-            client.set(KEY, "貂蝉");
+            jedis.set(KEY, "貂蝉");
 
             //获取key
-            String valus = client.get(KEY);
+            String valus = jedis.get(KEY);
             System.out.println(valus);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
@@ -75,19 +76,19 @@ public class RedisTest {
     public void testStudent(){
         String KEY = "key_student";
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
-            client.set(KEY,JSON.toJSONString(TestDataUtils.createStudent1()));
+            jedis.set(KEY,JSON.toJSONString(TestDataUtils.createStudent1()));
 
-            String studentJson = client.get(KEY);
+            String studentJson = jedis.get(KEY);
             Student student = JSON.parseObject(studentJson, Student.class);
             System.out.println(student);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
@@ -101,26 +102,26 @@ public class RedisTest {
     public void testList() {
         String KEY = "key_list";
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
             //一个一个添加： 将值插入到列表头部
-//            client.lpush(KEY,"貂蝉");
+//            jedis.lpush(KEY,"貂蝉");
             //一个一个添加： 将值插入到列表尾部
-//            client.rpush(KEY,"吕布");
+//            jedis.rpush(KEY,"吕布");
 
             List<String> list = new ArrayList<>();
             list.add("貂蝉");
             list.add("吕布");
-            client.rpush(KEY,list.toArray(new String[list.size()]));
+            jedis.rpush(KEY,list.toArray(new String[list.size()]));
 
-            List<String> value = client.lrange(KEY, 0, -1);
+            List<String> value = jedis.lrange(KEY, 0, -1);
             System.out.println(value);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
@@ -135,31 +136,31 @@ public class RedisTest {
             values.add("貂蝉" + i);
         }
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
             long start1 = System.currentTimeMillis();
             for (String value : values) {
-                client.sadd(KEY,value);
+                jedis.sadd(KEY,value);
             }
             long end1 = System.currentTimeMillis();
             System.out.println("循环插入 " + values.size() + " 条数据共花费了 " +(end1-start1) +" 毫秒");
 
 
             long start2 = System.currentTimeMillis();
-            client.sadd(KEY,values.toArray(new String[values.size()]));
+            jedis.sadd(KEY,values.toArray(new String[values.size()]));
             long end2 = System.currentTimeMillis();
             System.out.println("批量插入 " + values.size() + " 条数据共花费了 " +(end2-start2) +" 毫秒");
 
 
-            Set<String> value = client.smembers(KEY);
+            Set<String> value = jedis.smembers(KEY);
             System.out.println(value);
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
@@ -169,17 +170,17 @@ public class RedisTest {
     public void testSortedSet() {
         String KEY = "key_sorted_set";
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
-            client.zadd(KEY,1.1,"吕布");
-            client.zadd(KEY,1.2,"貂蝉");
+            jedis.zadd(KEY,1.1,"吕布");
+            jedis.zadd(KEY,1.2,"貂蝉");
 
-            Set<String> value = client.zrange(KEY,0,-1);
+            Set<String> value = jedis.zrange(KEY,0,-1);
             System.out.println(value);
 
-            Set<Tuple> tuples = client.zrangeWithScores(KEY, 0, -1);
+            Set<Tuple> tuples = jedis.zrangeWithScores(KEY, 0, -1);
             if (CollectionUtils.isNotEmpty(tuples)){
                 for (Tuple tuple : tuples) {
                     System.out.println(tuple.getScore() + " - " + tuple.getElement());
@@ -188,7 +189,7 @@ public class RedisTest {
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
@@ -198,21 +199,21 @@ public class RedisTest {
     public void testHashMap() {
         String KEY = "key_hashmap";
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
             HashMap<String, String> map = new HashMap<>();
             map.put("2018/01/01","天津");
             map.put("2018/01/02","上海");
-            client.hmset(KEY,map);
+            jedis.hmset(KEY,map);
 
-            Map<String, String> values = client.hgetAll(KEY);
+            Map<String, String> values = jedis.hgetAll(KEY);
             System.out.println(values);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
@@ -222,15 +223,15 @@ public class RedisTest {
     public void testSyncSet() {
         String KEY = "key_set";
 
-        Jedis client = null;
+        Jedis jedis = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
             /** ----- 造数据 start ----- */
             Collection<String> oldData = new ArrayList<>();
             oldData.add("貂蝉");
             oldData.add("妲己");
-            client.sadd(KEY,oldData.toArray(new String[oldData.size()]));
+            jedis.sadd(KEY,oldData.toArray(new String[oldData.size()]));
 
             Collection<String> newValues = new ArrayList<>();
             newValues.add("张飞");
@@ -238,10 +239,10 @@ public class RedisTest {
             /** ----- 造数据 end  ----- */
 
 
-            Set<String> oldValues = client.smembers(KEY);
+            Set<String> oldValues = jedis.smembers(KEY);
             // Don't have old data
             if (CollectionUtils.isEmpty(oldValues)) {
-                client.sadd(KEY,oldValues.toArray(new String[oldValues.size()]));
+                jedis.sadd(KEY,oldValues.toArray(new String[oldValues.size()]));
                 return;
             }
 
@@ -257,23 +258,23 @@ public class RedisTest {
 
             // do add
             if (CollectionUtils.isNotEmpty(addValues)) {
-                client.sadd(KEY,addValues.toArray(new String[addValues.size()]));
+                jedis.sadd(KEY,addValues.toArray(new String[addValues.size()]));
             }
             // do minus
             if (CollectionUtils.isNotEmpty(minusValues)) {
-                client.srem(KEY,minusValues.toArray(new String[minusValues.size()]));
+                jedis.srem(KEY,minusValues.toArray(new String[minusValues.size()]));
             }
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
     /** 测试redis管道 */
     @Test
-    public void testPipeline() throws ParseException {
+    public void testPipeline() {
         String KEY = "key_set";
 
         List<String> values = new ArrayList<>();
@@ -281,13 +282,14 @@ public class RedisTest {
             values.add("貂蝉" + i);
         }
 
-        Jedis client = null;
+        Jedis jedis = null;
+        Pipeline pipelined = null;
         try {
-            client = JedisPoolUtils.getJedis();
+            jedis = JedisPoolUtils.getJedis();
 
             long start1 = System.currentTimeMillis();
             for (String value : values) {
-                client.sadd(KEY,value);
+                jedis.sadd(KEY,value);
             }
             long end1 = System.currentTimeMillis();
             System.out.println("循环单次插入 " + values.size() + " 条数据共花费了 " +(end1-start1) +" 毫秒");
@@ -295,7 +297,7 @@ public class RedisTest {
 
             /** 管道技术 */
             long start2 = System.currentTimeMillis();
-            Pipeline pipelined = client.pipelined();
+            pipelined = jedis.pipelined();
             for (String value : values) {
                 pipelined.sadd(KEY,value);
             }
@@ -307,7 +309,8 @@ public class RedisTest {
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            client.close();
+            JedisPoolUtils.closePipelined(pipelined);
+            JedisPoolUtils.closeJedis(jedis);
         }
     }
 
@@ -316,7 +319,7 @@ public class RedisTest {
      *  https://www.cnblogs.com/liuchuanfeng/p/7190654.html
      * */
     @Test
-    public void testTransaction() throws ParseException {
+    public void testTransaction01() {
         String KEY = "key_set";
 
         String KEY_HASHMAP = "key_hashmap";
@@ -325,26 +328,64 @@ public class RedisTest {
         try {
             jedis = JedisPoolUtils.getJedis();
 
-            //监视key，当事务执行之前这个key发生了改变，事务会被中断，事务exec返回结果为null
+            //该命令用户高并发时的乐观锁 监视key，当事务执行之前这个key发生了改变，事务会被中断，事务exec返回结果为null
             jedis.watch(KEY);
 
             //开启事务
             Transaction tx = jedis.multi();
 
-            tx.sadd(KEY,"貂蝉");
+            tx.sadd(KEY, "貂蝉");
+//
 //            int a = 5/0;
-            tx.sadd(KEY, "吕布");
+
+//            tx.sadd(KEY, "吕布");
 
             //提交事务
-            tx.exec();
+            List<Object> exec = tx.exec();
+            if (exec == null){
+                System.out.println("事务提交失败，原因为提交前key被其他用户修改");
+            }
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            jedis.close();
+            JedisPoolUtils.closeJedis(jedis);
         }
 
+    }
+
+
+    @Test
+    public void testTransaction02() {
+        String KEY = "key_set";
+
+        String KEY_HASHMAP = "key_hashmap";
+
+        Jedis jedis = null;
+        try {
+            jedis = JedisPoolUtils.getJedis();
+
+            //该命令用户高并发时的乐观锁 监视key，当事务执行之前这个key发生了改变，事务会被中断，事务exec返回结果为null
+            jedis.watch(KEY);
+
+            //开启事务
+            Transaction tx = jedis.multi();
+
+            tx.sadd(KEY, "吕布");
+
+            //提交事务
+            List<Object> exec = tx.exec();
+            if (exec == null){
+                System.out.println("事务提交失败，原因为提交前key被其他用户修改");
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            JedisPoolUtils.closeJedis(jedis);
+        }
 
     }
+
 
 }

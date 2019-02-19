@@ -58,6 +58,28 @@ public class EmptyTest {
     }
 
 
+    @Test
+    public void testFor(){
+        List<String> list = null;
+        list = new ArrayList<>();
+        System.out.println(list.size());
+
+        for (String s : list) {
+            System.out.println(s);
+        }
+
+        System.out.println("==============");
+
+        Map<Object, Object> map = null;
+        map = new HashMap<>();
+        System.out.println(map.size());
+        Set<Map.Entry<Object, Object>> entries = map.entrySet();
+        for (Map.Entry<Object, Object> entry : entries) {
+            System.out.println(entry.getKey() + " - " + entry.getValue());
+        }
+    }
+
+
 
 
 }

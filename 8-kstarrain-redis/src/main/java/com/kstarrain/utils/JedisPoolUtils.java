@@ -1,8 +1,10 @@
 package com.kstarrain.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,6 +14,7 @@ import java.util.ResourceBundle;
  * @create: 2019-02-08 17:25
  * @description:
  */
+@Slf4j
 public class JedisPoolUtils {
 
     private static JedisPool jedisPool;
@@ -89,8 +92,6 @@ public class JedisPoolUtils {
 
 
 
-
-
     /**
      * 获取一个jedis 对象
      *
@@ -113,6 +114,23 @@ public class JedisPoolUtils {
             initShardedJedisPool();
         }
         return shardedJedisPool.getResource();
+    }
+
+
+    public static void closeJedis(Jedis jedis) {
+        if (jedis != null) {
+            jedis.close();
+        }
+    }
+
+    public static void closePipelined(Pipeline pipelined) {
+        if (pipelined != null) {
+            try {
+                pipelined.close();
+            } catch (IOException e) {
+                log.error(e.getMessage(),e);
+            }
+        }
     }
 
 }
