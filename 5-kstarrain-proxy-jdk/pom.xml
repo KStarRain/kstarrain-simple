@@ -9,12 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>1-kstarrain-log</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>log4j</module>
-        <module>logback</module>
-    </modules>
+    <artifactId>5-kstarrain-proxy-jdk</artifactId>
 
 
 </project>
