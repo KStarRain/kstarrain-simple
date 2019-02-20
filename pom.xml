@@ -9,15 +9,13 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>1-kstarrain-log4j</module>
-        <module>2-kstarrain-logback</module>
-        <module>3-kstarrain-servlet</module>
-        <module>4-kstarrain-jdbc</module>
-        <module>5-kstarrain-mybatis</module>
-        <module>6-kstarrain-proxy-jdk</module>
-        <module>7-kstarrain-proxy-cglib</module>
-        <module>8-kstarrain-redis</module>
         <module>0-kstarrain-other</module>
+        <module>1-kstarrain-log</module>
+        <module>2-kstarrain-servlet</module>
+        <module>3-kstarrain-jdbc</module>
+        <module>4-kstarrain-mybatis</module>
+        <module>5-kstarrain-proxy</module>
+        <module>6-kstarrain-redis</module>
     </modules>
 
 
