@@ -16,4 +16,8 @@ public interface IGoodsService {
      * @param quantity 采购量
      */
     void reduceStockByKey(String buyerId, String goodsKey, int quantity);
+
+
+
+
 }

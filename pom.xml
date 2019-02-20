@@ -16,6 +16,7 @@
         <module>4-kstarrain-mybatis</module>
         <module>5-kstarrain-proxy</module>
         <module>6-kstarrain-redis</module>
+        <module>0-kstarrain-common</module>
     </modules>
 
 

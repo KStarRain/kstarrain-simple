@@ -60,6 +60,15 @@ public class RedisTest {
             //设置key-value
             jedis.set(KEY, "貂蝉");
 
+            //SETNX 是『SET if Not eXists』(如果不存在，则 SET)
+            Long count = jedis.setnx(KEY, "吕布");
+            if (count == 0){
+                System.out.println("设置吕布失败");
+            }else {
+                System.out.println("设置吕布成功");
+            }
+
+
             //获取key
             String valus = jedis.get(KEY);
             System.out.println(valus);

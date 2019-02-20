@@ -95,7 +95,7 @@ public class MybatisTest {
 
             StudentMapper userMapper = session.getMapper(StudentMapper.class);
 
-            PageHelper.startPage(2, 3, false);
+            PageHelper.startPage(2, 3, true);
             Page<Student> students = (Page<Student>) userMapper.findAllStudent();
             System.out.println("当前页     ：" + students.getPageNum());
             System.out.println("每页显示行数：" + students.getPageSize());
