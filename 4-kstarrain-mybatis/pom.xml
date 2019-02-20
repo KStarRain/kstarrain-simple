@@ -14,18 +14,19 @@
 
     <!-- 参考文档 https://blog.csdn.net/qq_32166627/article/details/70741729-->
     <dependencies>
+
+        <!-- mysql驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.38</version>
+        </dependency>
+
         <!-- mybatis -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.4.4</version>
-        </dependency>
-
-        <!-- mysql驱动包 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.38</version>
         </dependency>
 
         <!-- pagehelper 分页插件 源码分析：https://blog.csdn.net/u014082617/article/details/71215539/ -->
@@ -42,13 +43,6 @@
             <version>1.2.3</version>
         </dependency>
 
-        <!-- junit单元测试 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 

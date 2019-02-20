@@ -17,10 +17,8 @@
         <module>3-kstarrain-jdbc</module>
         <module>4-kstarrain-mybatis</module>
         <module>5-kstarrain-proxy-jdk</module>
-        <module>5-kstarrain-proxy</module>
-        <module>6-kstarrain-redis</module>
         <module>5-kstarrain-proxy-cglib</module>
-
+        <module>6-kstarrain-redis</module>
     </modules>
 
 
@@ -32,11 +30,11 @@
             <version>1.12.4</version>
         </dependency>
 
-        <!-- 阿里巴巴json转化插件 -->
+        <!-- logback 日志 -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.42</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
         </dependency>
 
         <!-- junit单元测试 -->

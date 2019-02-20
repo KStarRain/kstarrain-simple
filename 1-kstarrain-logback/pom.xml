@@ -27,13 +27,6 @@
             <version>1.2.3</version>
         </dependency>
 
-        <!--lombok   如果不想每次都写 private final Logger logger = LoggerFactory.getLogger(XXX.class); 可以用注解@Slf4 -->
-        <!--<dependency>-->
-        <!--<groupId>org.projectlombok</groupId>-->
-        <!--<artifactId>lombok</artifactId>-->
-        <!--<version>1.12.4</version>-->
-        <!--</dependency>-->
-
     </dependencies>
 
 </project>
