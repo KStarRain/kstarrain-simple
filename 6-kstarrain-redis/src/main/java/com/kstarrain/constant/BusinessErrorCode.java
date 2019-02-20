@@ -1,8 +1,8 @@
 package com.kstarrain.constant;
 
-import com.kstarrain.exception.IErrorCode;
+import com.kstarrain.exception.ErrorCode;
 
-public enum BusinessErrorCode implements IErrorCode {
+public enum BusinessErrorCode implements ErrorCode {
 
     BUSINESS000("BUSINESS000", "系统异常"),
     BUSINESS001("BUSINESS001", "采购数必须为正数"),

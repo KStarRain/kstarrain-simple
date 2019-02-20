@@ -20,37 +20,12 @@
             <version>2.8.0</version>
         </dependency>
 
-        <!-- logback -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-        </dependency>
-
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.12.4</version>
-        </dependency>
-
-        <!-- 阿里巴巴json转化插件 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.42</version>
-        </dependency>
 
         <!-- common 工具类-->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.8.1</version>
+            <groupId>com.kstarrain</groupId>
+            <artifactId>0-kstarrain-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <!-- junit单元测试 -->

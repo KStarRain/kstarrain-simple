@@ -3,6 +3,7 @@ package com.kstarrain;
 
 import com.kstarrain.constant.BusinessErrorCode;
 import com.kstarrain.exception.BusinessException;
+import com.kstarrain.utils.DistributedLockUtils;
 import com.kstarrain.utils.JedisPoolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,6 +14,7 @@ import redis.clients.jedis.Transaction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author: Dong Yu
@@ -144,5 +146,72 @@ public class ConcurrentTest {
         }
     }
 
+
+
+
+    @Test
+    public void testDistributedLock01() {
+
+        String KEY = "lock";
+        String requestId = UUID.randomUUID().toString();
+        //是否获取到了锁
+        boolean lockable = false;
+
+        Jedis jedis = null;
+        try {
+            jedis = JedisPoolUtils.getJedis();
+
+
+            lockable = DistributedLockUtils.tryGetDistributedLock(jedis, KEY, requestId, 10000);
+
+            //如果未获取到锁
+            if (!lockable){
+                System.out.println("未获得锁，请重试");
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            if (lockable){
+                DistributedLockUtils.releaseDistributedLock(jedis,KEY,requestId);
+            }
+            JedisPoolUtils.closeJedis(jedis);
+        }
+    }
+
+
+
+
+
+    @Test
+    public void testDistributedLock02() {
+
+        String KEY = "lock";
+        String requestId = UUID.randomUUID().toString();
+        //是否获取到了锁
+        boolean lockable = false;
+
+        Jedis jedis = null;
+        try {
+            jedis = JedisPoolUtils.getJedis();
+
+
+            lockable = DistributedLockUtils.tryGetDistributedLock(jedis, KEY, requestId, 10000);
+
+            //如果未获取到锁
+            if (!lockable){
+                System.out.println("未获得锁，请重试");
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            if (lockable){
+                DistributedLockUtils.releaseDistributedLock(jedis,KEY,requestId);
+            }
+            JedisPoolUtils.closeJedis(jedis);
+        }
+
+    }
 
 }
