@@ -24,11 +24,10 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class CacheBreakdownRequest {
 
-    //商品key
     private static String key = "all_goods";
 
 
-    /** 高并发抢购测试  */
+    /** 缓存并发测试  */
     public static void main(String[] args) {
 
         GoodsController goodsController = new GoodsController(); // 初始化商品

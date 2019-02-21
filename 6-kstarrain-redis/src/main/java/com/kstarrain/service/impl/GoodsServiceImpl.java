@@ -93,7 +93,7 @@ public class GoodsServiceImpl implements IGoodsService {
 
             String requestId = UUID.randomUUID().toString();
 
-            //分布式锁
+            /**分布式锁*/
             if (DistributedLockUtils.tryLock(key,requestId,5)){
 
                 try {
@@ -103,7 +103,7 @@ public class GoodsServiceImpl implements IGoodsService {
                     //将数据存入缓存
                     JedisUtils.set(key,JSON.toJSONString(result));
                 } finally {
-                    //释放锁
+                    /**释放锁*/
                     DistributedLockUtils.releaseLock(key,requestId);
                 }
             }else {
@@ -126,10 +126,10 @@ public class GoodsServiceImpl implements IGoodsService {
 
 
 
-    //模仿从数据库取数据，用时21秒
+    //模仿从数据库取数据，用时1秒
     private List<Goods> getAllGoodsFromDB() throws InterruptedException {
 
-        Thread.sleep(1000l);
+        Thread.sleep(1000L);
 
         List<Goods> allGoods = new ArrayList<>();
 
