@@ -152,30 +152,25 @@ public class ConcurrentTest {
     @Test
     public void testDistributedLock01() {
 
-        String KEY = "lock";
+        String KEY = "888";
         String requestId = UUID.randomUUID().toString();
         //是否获取到了锁
         boolean lockable = false;
 
         Jedis jedis = null;
         try {
-            jedis = JedisPoolUtils.getJedis();
 
+            lockable = DistributedLockUtils.tryLock(KEY, requestId, 10000);
 
-            lockable = DistributedLockUtils.tryGetDistributedLock(jedis, KEY, requestId, 10000);
-
-            //如果未获取到锁
-            if (!lockable){
+            if (lockable){
+                System.out.println("获得锁，执行业务逻辑");
+            }else {
                 System.out.println("未获得锁，请重试");
             }
-
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            if (lockable){
-                DistributedLockUtils.releaseDistributedLock(jedis,KEY,requestId);
-            }
-            JedisPoolUtils.closeJedis(jedis);
+            if (lockable){DistributedLockUtils.releaseLock(KEY,requestId);}
         }
     }
 
@@ -186,35 +181,26 @@ public class ConcurrentTest {
     @Test
     public void testDistributedLock02() {
 
-        String KEY = "lock";
+        String KEY = "888";
         String requestId = UUID.randomUUID().toString();
         //是否获取到了锁
         boolean lockable = false;
 
         Jedis jedis = null;
         try {
-            jedis = JedisPoolUtils.getJedis();
 
+            lockable = DistributedLockUtils.tryLock(KEY, requestId, 10000);
 
-            lockable = DistributedLockUtils.tryGetDistributedLock(jedis, KEY, requestId, 10000);
-
-            //如果未获取到锁
-            if (!lockable){
+            if (lockable){
+                System.out.println("获得锁，执行业务逻辑");
+            }else {
                 System.out.println("未获得锁，请重试");
             }
-
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-            if (lockable){
-                DistributedLockUtils.releaseDistributedLock(jedis,KEY,requestId);
-            }
-            JedisPoolUtils.closeJedis(jedis);
+            if (lockable){DistributedLockUtils.releaseLock(KEY,requestId);}
         }
-
     }
-
-
-
 
 }

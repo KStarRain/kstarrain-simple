@@ -7,6 +7,7 @@ import com.kstarrain.pojo.Goods;
 import com.kstarrain.service.IGoodsService;
 import com.kstarrain.utils.DistributedLockUtils;
 import com.kstarrain.utils.JedisPoolUtils;
+import com.kstarrain.utils.JedisUtils;
 import com.kstarrain.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,6 +18,7 @@ import redis.clients.jedis.Transaction;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author: DongYu
@@ -84,71 +86,50 @@ public class GoodsServiceImpl implements IGoodsService {
     @Override
     public List<Goods> findAllGoods(String key) throws InterruptedException {
 
-        Jedis jedis = null;
-
-        try {
-            jedis = JedisPoolUtils.getJedis();
-
-            //先对key校验是否合法，防止缓存和数据库中都没有造成无限次击穿
-            // XXXXXXXXXXXXXX
-
-            List<Goods> result = this.findAllGoods(jedis,key);
-            return result;
-        }  catch (Exception e) {
-            throw e;
-        } finally {
-            JedisPoolUtils.closeJedis(jedis);
-        }
-
-    }
-
-
-    /**
-     * 基于分布式锁解决缓存-并发问题
-     * @param jedis 一个连接用于递归，否则无法释放链接
-     * @param key
-     */
-    private List<Goods> findAllGoods(Jedis jedis, String key) throws InterruptedException {
-
         //从缓存获取数据
-        List<Goods> result = JSON.parseArray(jedis.get(key), Goods.class);
+        List<Goods> result = JSON.parseArray(JedisUtils.get(key), Goods.class);
 
         if (CollectionUtils.isEmpty(result)){
 
+            String requestId = UUID.randomUUID().toString();
+
             //分布式锁
-            if (DistributedLockUtils.tryGetDistributedLock(jedis,"lock_"+key,10000)){
+            if (DistributedLockUtils.tryLock(key,requestId,5)){
 
                 try {
                     //从数据库取数据
                     result = this.getAllGoodsFromDB();
 
                     //将数据存入缓存
-                    jedis.set(key,JSON.toJSONString(result));
+                    JedisUtils.set(key,JSON.toJSONString(result));
                 } finally {
                     //释放锁
-                    DistributedLockUtils.releaseDistributedLock(jedis,"lock_"+key);
+                    DistributedLockUtils.releaseLock(key,requestId);
                 }
             }else {
                 //再次从缓存中查询
-                result = JSON.parseArray(jedis.get(key), Goods.class);
+                result = JSON.parseArray(JedisUtils.get(key), Goods.class);
 
                 //如果缓存中还没有数据，休眠一会递归查询
                 if (CollectionUtils.isEmpty(result)){
                     Thread.sleep(2000l);
-                    result = findAllGoods(jedis,key);
+                    result = findAllGoods(key);
                 }
             }
         }else{
             System.out.println(ThreadLocalUtils.getValue("USER_ID",String.class) + " ---> 查询缓存");
         }
         return result;
+
     }
 
 
-    //模仿从数据库取数据，用时2秒
+
+
+    //模仿从数据库取数据，用时21秒
     private List<Goods> getAllGoodsFromDB() throws InterruptedException {
 
-        Thread.sleep(2000l);
+        Thread.sleep(1000l);
 
         List<Goods> allGoods = new ArrayList<>();
 

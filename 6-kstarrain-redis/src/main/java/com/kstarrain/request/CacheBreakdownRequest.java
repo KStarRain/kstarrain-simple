@@ -37,7 +37,7 @@ public class CacheBreakdownRequest {
 
         ExecutorService executor = Executors.newFixedThreadPool(1000);
         // 测试一万人同时抢购
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 10000; i++) {
             executor.execute(new CacheBreakdownRunnable(goodsController,"user" + i,key));
         }
         executor.shutdown();
