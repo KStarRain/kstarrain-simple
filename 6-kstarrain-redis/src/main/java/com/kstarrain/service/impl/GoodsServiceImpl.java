@@ -1,9 +1,13 @@
 package com.kstarrain.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.kstarrain.constant.BusinessErrorCode;
 import com.kstarrain.exception.BusinessException;
+import com.kstarrain.pojo.Goods;
 import com.kstarrain.service.IGoodsService;
+import com.kstarrain.utils.DistributedLockUtils;
 import com.kstarrain.utils.JedisPoolUtils;
+import com.kstarrain.utils.ThreadLocalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import redis.clients.jedis.Jedis;
@@ -11,6 +15,7 @@ import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +42,9 @@ public class GoodsServiceImpl implements IGoodsService {
             //监视一个key，当事务执行之前这个key发生了改变，事务会被中断，事务exec返回结果为null
             jedis.watch(goodsKey);
 
+            Goods goods = JSON.parseObject(jedis.get(goodsKey), Goods.class);
             //获取商品剩余存货量
-            int stock = Integer.parseInt(jedis.get(goodsKey));
+            int stock = goods.getStock();
 
             if (stock > 0) {
 
@@ -48,7 +54,8 @@ public class GoodsServiceImpl implements IGoodsService {
                 Transaction tx = jedis.multi();
 
                 /** 减库存 */
-                tx.set(goodsKey,String.valueOf(stock - quantity));
+                goods.setStock(stock - quantity);
+                tx.set(goodsKey,JSON.toJSONString(goods));
 
                 // 提交事务，如果此时监视的key被改动了，则返回null
                 List<Object> execResult = tx.exec();
@@ -56,7 +63,7 @@ public class GoodsServiceImpl implements IGoodsService {
                 if (CollectionUtils.isNotEmpty(execResult)) {//抢购成功
 
                     /** 创建订单 */
-                    jedis.set("concurrent:order:" + buyerId, "买家" + buyerId + "抢购到了" + quantity + "件商品");
+                    jedis.set("concurrent:order:" + buyerId, "买家" + buyerId + "抢购到了" + quantity + "件" + goods.getGoodsName());
                 } else {
                     throw new BusinessException(BusinessErrorCode.BUSINESS004);
                 }
@@ -72,7 +79,94 @@ public class GoodsServiceImpl implements IGoodsService {
             jedis.close();
         }
 
+    }
 
+    @Override
+    public List<Goods> findAllGoods(String key) throws InterruptedException {
+
+        Jedis jedis = null;
+
+        try {
+            jedis = JedisPoolUtils.getJedis();
+
+            //先对key校验是否合法，防止缓存和数据库中都没有造成无限次击穿
+            // XXXXXXXXXXXXXX
+
+            List<Goods> result = this.findAllGoods(jedis,key);
+            return result;
+        }  catch (Exception e) {
+            throw e;
+        } finally {
+            JedisPoolUtils.closeJedis(jedis);
+        }
+
+    }
+
+
+    /**
+     * 基于分布式锁解决缓存-并发问题
+     * @param jedis 一个连接用于递归，否则无法释放链接
+     * @param key
+     */
+    private List<Goods> findAllGoods(Jedis jedis, String key) throws InterruptedException {
+
+        //从缓存获取数据
+        List<Goods> result = JSON.parseArray(jedis.get(key), Goods.class);
+
+        if (CollectionUtils.isEmpty(result)){
+
+            //分布式锁
+            if (DistributedLockUtils.tryGetDistributedLock(jedis,"lock_"+key,10000)){
+
+                try {
+                    //从数据库取数据
+                    result = this.getAllGoodsFromDB();
+
+                    //将数据存入缓存
+                    jedis.set(key,JSON.toJSONString(result));
+                } finally {
+                    //释放锁
+                    DistributedLockUtils.releaseDistributedLock(jedis,"lock_"+key);
+                }
+            }else {
+                //再次从缓存中查询
+                result = JSON.parseArray(jedis.get(key), Goods.class);
+
+                //如果缓存中还没有数据，休眠一会递归查询
+                if (CollectionUtils.isEmpty(result)){
+                    Thread.sleep(2000l);
+                    result = findAllGoods(jedis,key);
+                }
+            }
+        }else{
+            System.out.println(ThreadLocalUtils.getValue("USER_ID",String.class) + " ---> 查询缓存");
+        }
+        return result;
+    }
+
+
+    //模仿从数据库取数据，用时2秒
+    private List<Goods> getAllGoodsFromDB() throws InterruptedException {
+
+        Thread.sleep(2000l);
+
+        List<Goods> allGoods = new ArrayList<>();
+
+        Goods goods1 = new Goods();
+        goods1.setGoodsId("d7fbbfd87a08408ba994dea6be435111");
+        goods1.setGoodsName("iphone8");
+        goods1.setStock(10);
+        allGoods.add(goods1);
+
+        Goods goods2 = new Goods();
+        goods2.setGoodsId("d7fbbfd87a08408ba994dea6be435222");
+        goods2.setGoodsName("xiaomi");
+        goods2.setStock(10);
+        allGoods.add(goods2);
+
+        System.out.println(ThreadLocalUtils.getValue("USER_ID",String.class) + " ---> 查询数据库");
+
+        return allGoods;
 
     }
 }

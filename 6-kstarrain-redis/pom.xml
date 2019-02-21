@@ -13,7 +13,7 @@
 
     <dependencies>
 
-        <!-- redis驱动 -->
+        <!-- redis驱动(jedis) -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>

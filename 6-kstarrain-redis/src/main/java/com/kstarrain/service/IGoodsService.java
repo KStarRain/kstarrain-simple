@@ -1,6 +1,9 @@
 package com.kstarrain.service;
 
+import com.kstarrain.pojo.Goods;
+
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author: DongYu
@@ -18,6 +21,5 @@ public interface IGoodsService {
     void reduceStockByKey(String buyerId, String goodsKey, int quantity);
 
 
-
-
+    List<Goods> findAllGoods(String key) throws InterruptedException;
 }

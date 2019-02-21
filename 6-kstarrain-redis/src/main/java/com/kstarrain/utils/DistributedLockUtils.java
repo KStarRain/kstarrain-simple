@@ -15,8 +15,8 @@ public class DistributedLockUtils {
     private static final String LOCK_SUCCESS = "OK";
     private static final String SET_IF_NOT_EXIST = "NX";
     private static final String SET_WITH_EXPIRE_TIME = "PX";
-
     private static final Long RELEASE_SUCCESS = 1L;
+    private static final String NO_REQUESTID = "default";
 
     /**
      * 尝试获取分布式锁
@@ -43,7 +43,10 @@ public class DistributedLockUtils {
             return true;
         }
         return false;
+    }
 
+    public static boolean tryGetDistributedLock(Jedis jedis, String lockKey, int expireTime) {
+       return tryGetDistributedLock(jedis, lockKey, NO_REQUESTID, expireTime);
     }
 
 
@@ -70,6 +73,9 @@ public class DistributedLockUtils {
             return true;
         }
         return false;
+    }
 
+    public static boolean releaseDistributedLock(Jedis jedis, String lockKey) {
+        return releaseDistributedLock(jedis, lockKey, NO_REQUESTID);
     }
 }

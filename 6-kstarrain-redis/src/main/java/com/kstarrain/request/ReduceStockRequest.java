@@ -1,7 +1,9 @@
 package com.kstarrain.request;
 
+import com.alibaba.fastjson.JSON;
 import com.kstarrain.controller.GoodsController;
-import com.kstarrain.request.runnable.GoodsControllerRunnable;
+import com.kstarrain.pojo.Goods;
+import com.kstarrain.request.runnable.ReduceStockRunnable;
 import com.kstarrain.utils.JedisPoolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -18,10 +20,12 @@ import java.util.concurrent.Executors;
 *                https://blog.csdn.net/qq1013598664/article/details/70183908
  */
 @Slf4j
-public class ConcurrentRequest {
+public class ReduceStockRequest {
 
+    //商品id
+    private static String goodsId = "d7fbbfd87a08408ba994dea6be435111";
     //商品key
-    private static String goodsKey = "concurrent:goods:iphone8";
+    private static String goodsKey = "concurrent:goods:" + goodsId;
     //商品总库存数
     private static int stock = 10;
 
@@ -42,7 +46,7 @@ public class ConcurrentRequest {
         ExecutorService executor = Executors.newFixedThreadPool(1000);
         // 测试一万人同时抢购
         for (int i = 1; i <= 10000; i++) {
-            executor.execute(new GoodsControllerRunnable(goodsController,"user" + i, goodsKey, quantity));
+            executor.execute(new ReduceStockRunnable(goodsController,"user" + i, goodsKey, quantity));
         }
         executor.shutdown();
 
@@ -53,8 +57,15 @@ public class ConcurrentRequest {
     private static void initGoods() {
 
         Jedis jedis = JedisPoolUtils.getJedis();
-        //设置商品总库存
-        jedis.set(goodsKey, String.valueOf(stock));
+
+        Goods goods = new Goods();
+        goods.setGoodsId(goodsId);
+        goods.setGoodsName("iphone8");
+        goods.setStock(stock);
+
+        //设置需要抢购的商品商品
+        jedis.set(goodsKey, JSON.toJSONString(goods));
+
         //删除抢购成功key
         Set<String> keys = jedis.keys("concurrent:order:*");
         if (CollectionUtils.isNotEmpty(keys)){

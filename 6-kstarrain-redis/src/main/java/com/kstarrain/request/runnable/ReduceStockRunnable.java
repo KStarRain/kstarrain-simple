@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author: DongYu
  * @create: 2019-02-17 13:19
- * @description: 该类为了模仿多个线程请求单例的controller
+ * @description: 该类为了模仿多个线程请求单例的controller 减库存
  */
 @Slf4j
-public class GoodsControllerRunnable implements Runnable{
+public class ReduceStockRunnable implements Runnable{
 
     private GoodsController goodsController;
 
@@ -21,7 +21,7 @@ public class GoodsControllerRunnable implements Runnable{
     private int quantity;
 
 
-    public GoodsControllerRunnable(GoodsController goodsController, String buyerId, String goodsKey, int quantity) {
+    public ReduceStockRunnable(GoodsController goodsController, String buyerId, String goodsKey, int quantity) {
         this.goodsController = goodsController;
         this.buyerId = buyerId;
         this.goodsKey = goodsKey;
