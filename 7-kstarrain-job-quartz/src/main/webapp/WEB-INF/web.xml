@@ -14,5 +14,25 @@
   </listener>
 
 
+  <!-- quartz可视化界面配置 -->
+  <servlet>
+    <servlet-name>quartzweb</servlet-name>
+    <servlet-class>com.github.quartzweb.http.QuartzWebServlet</servlet-class>
+    <!--配置HTML页面地址,不配置默认为/html-->
+    <init-param>
+      <param-name>resourcePath</param-name>
+      <param-value>/html</param-value>
+    </init-param>
+    <!--用户名密码-->
+    <init-param>
+      <param-name>quartWebUser</param-name>
+      <param-value>admin:admin;username2:password2</param-value>
+    </init-param>
+  </servlet>
+  <!--配置url-->
+  <servlet-mapping>
+    <servlet-name>quartzweb</servlet-name>
+    <url-pattern>/quartzweb/*</url-pattern>
+  </servlet-mapping>
 </web-app>
         

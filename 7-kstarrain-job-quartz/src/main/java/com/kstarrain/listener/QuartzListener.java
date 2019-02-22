@@ -1,5 +1,6 @@
 package com.kstarrain.listener;
 
+import com.kstarrain.job.BusinessJob1;
 import com.kstarrain.job.BusinessJob2;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -17,6 +18,7 @@ import javax.servlet.ServletContextListener;
 public class QuartzListener implements ServletContextListener {
 
     private Scheduler scheduler;
+    private String GROUP = "kstarrain-job-quartz";
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -29,9 +31,8 @@ public class QuartzListener implements ServletContextListener {
             scheduler = new StdSchedulerFactory().getScheduler();
 
             //绑定作业到调度器上
-//        bindingScheduler("BusinessJob1", BusinessJob1.class, "*/1 * * * * ?", scheduler);
-//        bindingScheduler("BusinessJob2", BusinessJob1.class, "*/5 * * * * ?", scheduler);
-            bindingJobToScheduler("BusinessJob2", BusinessJob2.class, "0/10 * * * * ?", scheduler);
+            bindingJobToScheduler("BusinessJob1", BusinessJob1.class, "BusinessJob1任务描述","*/5 * * * * ?", scheduler);
+            bindingJobToScheduler("BusinessJob2", BusinessJob2.class, "BusinessJob2任务描述","0/10 * * * * ?", scheduler);
 
             //启动调度器
             scheduler.start();
@@ -52,13 +53,13 @@ public class QuartzListener implements ServletContextListener {
      * @param scheduler       调度器
      * @throws SchedulerException
      */
-    private static <T> void bindingJobToScheduler(String jobKey, Class<? extends Job> jobClass, String cronExpression, Scheduler scheduler) throws SchedulerException {
+    private  <T> void bindingJobToScheduler(String jobKey, Class<? extends Job> jobClass, String jobDescription,String cronExpression, Scheduler scheduler) throws SchedulerException {
 
         //引进作业程序
-        JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobKey).build();
+        JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobKey,GROUP).withDescription(jobDescription).build();
 
         //设置一个触发器
-        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
+        CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity("TRIGGER_"+jobKey,GROUP).withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
 
         //将作业程序和触发器设置到调度器中
         scheduler.scheduleJob(jobDetail, cronTrigger);

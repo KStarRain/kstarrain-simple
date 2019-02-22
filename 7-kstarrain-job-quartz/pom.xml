@@ -20,6 +20,13 @@
             <version>2.3.0</version>
         </dependency>
 
+        <!-- quartz-web可视化界面  参考地址:https://blog.csdn.net/qxc1281/article/details/76359246 -->
+        <dependency>
+            <groupId>com.github.quartzweb</groupId>
+            <artifactId>quartz-web</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
         <!-- servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
