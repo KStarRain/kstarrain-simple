@@ -19,6 +19,8 @@
         <module>5-kstarrain-proxy-jdk</module>
         <module>5-kstarrain-proxy-cglib</module>
         <module>6-kstarrain-redis</module>
+        <module>7-kstarrain-job-jdk</module>
+        <module>7-kstarrain-job-quartz</module>
     </modules>
 
 

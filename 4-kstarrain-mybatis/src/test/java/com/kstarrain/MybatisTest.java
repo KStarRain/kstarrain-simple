@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.kstarrain.mapper.StudentMapper;
 import com.kstarrain.pojo.Student;
 import com.kstarrain.utils.TestDataUtils;
+import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -65,15 +66,14 @@ public class MybatisTest {
             SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);
             SqlSession session = factory.openSession();
 
-            List<Student> objects = session.selectList("com.kstarrain.mapper.StudentMapper.findAllStudent");
+//            List<Student> objects = session.selectList("com.kstarrain.mapper.StudentMapper.findAllStudent");
 
             StudentMapper userMapper = session.getMapper(StudentMapper.class);
+
             List<Student> allStudent = userMapper.findAllStudent();
 
             Student student = allStudent.get(0);
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
             System.out.println(sdf.format(student.getBirthday()));
             System.out.println(sdf.format(student.getCreateDate()));
 
