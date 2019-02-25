@@ -8,9 +8,9 @@
     <welcome-file>./WEB-INF/view/index.jsp</welcome-file>
   </welcome-file-list>
 
-  <!-- quartz定时任务监听器 -->
+  <!-- 上下文监听器 -->
   <listener>
-    <listener-class>com.kstarrain.listener.QuartzListener</listener-class>
+    <listener-class>com.kstarrain.listener.ContextListener</listener-class>
   </listener>
 
 

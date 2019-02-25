@@ -1,4 +1,4 @@
-package com.kstarrain.listener;
+package com.kstarrain.config;
 
 import com.kstarrain.job.BusinessJob1;
 import com.kstarrain.job.BusinessJob2;
@@ -12,34 +12,32 @@ import javax.servlet.ServletContextListener;
 /**
  * @author: DongYu
  * @create: 2019-02-22 16:46
- * @description: quartz定时任务监听器，tomcat启动时加载所有作业
+ * @description: quartz定时任务统一配置
  */
 @Slf4j
-public class QuartzListener implements ServletContextListener {
+public class QuartzConfig{
 
-    private Scheduler scheduler;
-    private String GROUP = "kstarrain-job-quartz";
+    private static Scheduler scheduler;
+    private static String GROUP = "kstarrain-job-quartz";
 
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-
+    public static void init() {
 
         try {
-            log.info("QuartzListener init start");
+            log.info("QuartzConfig init start");
 
             //通过SchedulerFactory来获取一个调度器
             scheduler = new StdSchedulerFactory().getScheduler();
 
-            //绑定作业到调度器上
+            //绑定作业和触发器到调度器上
             bindingJobToScheduler("BusinessJob1", BusinessJob1.class, "BusinessJob1任务描述","*/5 * * * * ?", scheduler);
             bindingJobToScheduler("BusinessJob2", BusinessJob2.class, "BusinessJob2任务描述","0/10 * * * * ?", scheduler);
 
             //启动调度器
             scheduler.start();
 
-            log.info("QuartzListener init success");
+            log.info("QuartzConfig init success");
         } catch (SchedulerException e) {
-            log.error("QuartzListener init fail");
+            log.error("QuartzConfig init fail");
             log.error(e.getMessage(),e);
         }
 
@@ -53,7 +51,7 @@ public class QuartzListener implements ServletContextListener {
      * @param scheduler       调度器
      * @throws SchedulerException
      */
-    private  <T> void bindingJobToScheduler(String jobKey, Class<? extends Job> jobClass, String jobDescription,String cronExpression, Scheduler scheduler) throws SchedulerException {
+    private static <T> void bindingJobToScheduler(String jobKey, Class<? extends Job> jobClass, String jobDescription, String cronExpression, Scheduler scheduler) throws SchedulerException {
 
         //引进作业程序
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobKey,GROUP).withDescription(jobDescription).build();
@@ -67,15 +65,14 @@ public class QuartzListener implements ServletContextListener {
 
 
 
-    @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    public static void destroyed() {
         try {
             if (scheduler != null){
                 scheduler.shutdown();
             }
-            log.info("QuartzListener destroyed success");
+            log.info("QuartzConfig destroyed success");
         } catch (SchedulerException e) {
-            log.error("QuartzListener destroyed fail");
+            log.error("QuartzConfig destroyed fail");
             log.error(e.getMessage(),e);
         }
 

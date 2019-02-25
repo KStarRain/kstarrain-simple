@@ -5,6 +5,7 @@ import com.kstarrain.job.MyJob2;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,7 +27,11 @@ public class ScheduledExecutorServiceTest {
         MyJob1 task1 = new MyJob1();
         MyJob2 task2 = new MyJob2();
 
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(task1,0,1,TimeUnit.SECONDS);
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(task2,0,1,TimeUnit.SECONDS);
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(10);
+        scheduledExecutorService.scheduleAtFixedRate(task1,0,1,TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(task2,0,1,TimeUnit.SECONDS);
+
+//        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(task1,0,1,TimeUnit.SECONDS);
+//        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(task2,0,1,TimeUnit.SECONDS);
     }
 }
