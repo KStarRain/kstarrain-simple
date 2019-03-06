@@ -36,8 +36,8 @@ public class RedisTest {
             jedis.expire(KEY,10);
 
             //判断key是否存在
-            Boolean hasKey = jedis.exists(KEY);
-            System.out.println(hasKey);
+//            Boolean hasKey = jedis.exists(KEY);
+//            System.out.println(hasKey);
 
             //删除key
             jedis.del(KEY);
@@ -61,18 +61,18 @@ public class RedisTest {
             //设置key-value
             jedis.set(KEY, "貂蝉");
 
-            //SETNX 是『SET if Not eXists』(如果不存在，则 SET)
-            Long count = jedis.setnx(KEY, "吕布");
-            if (count == 0){
-                System.out.println("设置吕布失败");
-            }else {
-                System.out.println("设置吕布成功");
-            }
-
-
+//            //SETNX 是『SET if Not eXists』(如果不存在，则 SET)
+//            Long count = jedis.setnx(KEY, "吕布");
+//            if (count == 0){
+//                System.out.println("设置吕布失败");
+//            }else {
+//                System.out.println("设置吕布成功");
+//            }
+//
+//
             //获取key
-            String valus = jedis.get(KEY);
-            System.out.println(valus);
+//            String valus = jedis.get(KEY);
+//            System.out.println(valus);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
@@ -90,9 +90,10 @@ public class RedisTest {
         try {
             jedis = JedisPoolUtils.getJedis();
 
-            jedis.set(KEY,JSON.toJSONString(TestDataUtils.createStudent1()));
+//            jedis.set(KEY,JSON.toJSONString(TestDataUtils.createStudent1()));
 
             String studentJson = jedis.get(KEY);
+            System.out.println(studentJson);
             Student student = JSON.parseObject(studentJson, Student.class);
             System.out.println(student);
         } catch (Exception e) {
@@ -123,6 +124,7 @@ public class RedisTest {
 
             List<String> list = new ArrayList<>();
             list.add("貂蝉");
+            list.add("吕布");
             list.add("吕布");
             jedis.rpush(KEY,list.toArray(new String[list.size()]));
 
@@ -218,8 +220,8 @@ public class RedisTest {
             map.put("2018/01/02","上海");
             jedis.hmset(KEY,map);
 
-            Map<String, String> values = jedis.hgetAll(KEY);
-            System.out.println(values);
+//            Map<String, String> values = jedis.hgetAll(KEY);
+//            System.out.println(values);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {

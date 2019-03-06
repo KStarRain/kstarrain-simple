@@ -1,10 +1,11 @@
 package com.kstarrain.controller;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * @author: Dong Yu
@@ -36,31 +37,31 @@ public class Session01Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("===============  开始执行Session01Controller的 doGet方法 " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null){
-            System.out.println("request 中 Cookie 数量为:" + cookies.length);
-            for (Cookie cookie : cookies) {
-                System.out.println("   Cookie :   " + cookie.getName() + " = " + cookie.getValue());
-            }
-        }else{
-            System.out.println("request 中 cookie 数量为:" + 0);
-        }
-
-        System.out.println("开始创建/获取 Session ");
+//        System.out.println("===============  开始执行Session01Controller的 doGet方法 " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//
+//        Cookie[] cookies = request.getCookies();
+//
+//        if (cookies != null){
+//            System.out.println("request 中 Cookie 数量为:" + cookies.length);
+//            for (Cookie cookie : cookies) {
+//                System.out.println("   Cookie :   " + cookie.getName() + " = " + cookie.getValue());
+//            }
+//        }else{
+//            System.out.println("request 中 cookie 数量为:" + 0);
+//        }
+//
+//        System.out.println("开始创建/获取 Session ");
         HttpSession session = request.getSession();
-        String sessionId = session.getId();
-        System.out.println("   Session :    sessionId = " + sessionId);
-
-        System.out.println("设置 Session 属性  username = 董宇");
-        session.setAttribute("username","董宇");
-        System.out.println("设置 Session 属性  password = 123456");
-        session.setAttribute("password","123456");
-
-        String setcookie = response.getHeader("Set-Cookie");
-        System.out.println("response 的 header 中  Set-Cookie : " + setcookie);
+//        String sessionId = session.getId();
+//        System.out.println("   Session :    sessionId = " + sessionId);
+//
+//        System.out.println("设置 Session 属性  username = 董宇");
+//        session.setAttribute("username","董宇");
+//        System.out.println("设置 Session 属性  password = 123456");
+//        session.setAttribute("password","123456");
+//
+//        String setcookie = response.getHeader("Set-Cookie");
+//        System.out.println("response 的 header 中  Set-Cookie : " + setcookie);
 
 
 

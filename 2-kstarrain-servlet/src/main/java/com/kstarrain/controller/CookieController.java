@@ -24,17 +24,19 @@ public class CookieController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("开始执行CookieController的doGet方法");
-        Cookie[] cookies = request.getCookies();
-        System.out.println("cookie 数量为:" + cookies.length);
-        if (cookies != null){
-            for (Cookie cookie : cookies) {
-                System.out.println(cookie.getName() + "     " + cookie.getValue());
-            }
-        }
+//        System.out.println("开始执行CookieController的doGet方法");
+//        Cookie[] cookies = request.getCookies();
+//        System.out.println("cookie 数量为:" + cookies.length);
+//        if (cookies != null){
+//            for (Cookie cookie : cookies) {
+//                System.out.println(cookie.getName() + "     " + cookie.getValue());
+//            }
+//        }
 
         Cookie testCookie = new Cookie("testName","testValue");
         response.addCookie(testCookie);
+
+
         //响应编码
         response.setContentType("text/html;charset=utf-8");
 

@@ -21,6 +21,8 @@
         <module>6-kstarrain-redis</module>
         <module>7-kstarrain-job-jdk</module>
         <module>7-kstarrain-job-quartz</module>
+        <module>0-kstarrain-synchronized</module>
+        <module>0-kstarrain-reflex</module>
     </modules>
 
 

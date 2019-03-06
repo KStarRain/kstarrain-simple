@@ -32,5 +32,4 @@ public class BusinessJob1 implements Job {
             log.error(e.getMessage(),e);
         }
     }
-
 }

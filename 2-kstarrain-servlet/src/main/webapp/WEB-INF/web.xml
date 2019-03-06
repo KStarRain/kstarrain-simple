@@ -18,15 +18,15 @@
   <!--加载顺序：监听器>过滤器>Servlet-->
 
   <!--session监听器-->
-  <listener>
-    <listener-class>com.kstarrain.listener.SessionListener</listener-class>
-  </listener>
+  <!--<listener>-->
+    <!--<listener-class>com.kstarrain.listener.SessionListener</listener-class>-->
+  <!--</listener>-->
 
-  <!-- 当浏览器关闭时session不会马上销毁  需要在web.xml中设置保存的时间（单位分钟）
-       设置session的销毁时间 为1分钟 (时间不精确，为大概参考值) -->
-  <session-config>
-    <session-timeout>1</session-timeout>
-  </session-config>
+  <!--&lt;!&ndash; 当浏览器关闭时session不会马上销毁  需要在web.xml中设置保存的时间（单位分钟）-->
+       <!--设置session的销毁时间 为1分钟 (时间不精确，为大概参考值) &ndash;&gt;-->
+  <!--<session-config>-->
+    <!--<session-timeout>1</session-timeout>-->
+  <!--</session-config>-->
 
 
   <!--过滤器 filter-->
@@ -111,4 +111,3 @@
   </servlet-mapping>
 
 </web-app>
-        
