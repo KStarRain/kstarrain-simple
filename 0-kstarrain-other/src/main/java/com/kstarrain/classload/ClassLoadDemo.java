@@ -1,4 +1,4 @@
-package com.kstarrain.clazz;
+package com.kstarrain.classload;
 
 /**
  * @author: DongYu

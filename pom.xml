@@ -23,6 +23,7 @@
         <module>7-kstarrain-job-quartz</module>
         <module>0-kstarrain-synchronized</module>
         <module>0-kstarrain-reflex</module>
+        <module>8-kstarrain-poi</module>
     </modules>
 
 
