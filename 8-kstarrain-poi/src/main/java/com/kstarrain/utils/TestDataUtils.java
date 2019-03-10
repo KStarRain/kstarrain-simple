@@ -5,7 +5,9 @@ import com.kstarrain.pojo.Student;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -41,6 +43,18 @@ public class TestDataUtils {
         student2.setUpdateDate(new Date());
         student2.setAliveFlag("1");
         return student2;
+    }
+
+
+    public static List<Student> getStudentList(){
+
+        List<Student> data = new ArrayList<>();
+
+        data.add(createStudent1());
+        data.add(createStudent2());
+
+        return data;
+
     }
 
 

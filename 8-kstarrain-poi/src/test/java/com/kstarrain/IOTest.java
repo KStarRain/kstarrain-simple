@@ -19,7 +19,7 @@ import java.util.List;
  * @create: 2019-03-07 19:27
  * @description:
  */
-public class FileTest {
+public class IOTest {
 
 
     /** OutputStream：它是抽象类，不能创建对象，这里我们需要使用OutputStream类的子类FileOutputStream的对象把数据写到文件中 */
@@ -55,7 +55,7 @@ public class FileTest {
             e.printStackTrace();
         } finally {
             try {
-                //关闭流
+                //关闭输出流
                 output.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -64,7 +64,7 @@ public class FileTest {
     }
 
 
-    /** OutputStream：它是抽象类，不能创建对象，这里我们需要使用OutputStream类的子类FileOutputStream的对象把数据写到文件中 */
+    /** InputStream：它是抽象类，不能创建对象，这里我们需要使用InputStream类的子类FileInputStream的对象把数据写到文件中 */
     @Test
     public void inputStream(){
 
@@ -72,7 +72,6 @@ public class FileTest {
         String filePath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + "outputFile.txt";
 
         InputStream input = null;
-        OutputStream output = null;
         try {
             //2: 实例化InputStream 对象
             input = new FileInputStream(filePath);
@@ -100,7 +99,7 @@ public class FileTest {
             e.printStackTrace();
         } finally {
             try {
-                //关闭流
+                //关闭输入流
                 input.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -133,7 +132,7 @@ public class FileTest {
         } finally {
 
             try {
-                //关闭流
+                //关闭输入流
                 input.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -141,7 +140,7 @@ public class FileTest {
 
 
             try {
-                //关闭流
+                //关闭输出流
                 output.close();
             } catch (IOException e) {
                 e.printStackTrace();

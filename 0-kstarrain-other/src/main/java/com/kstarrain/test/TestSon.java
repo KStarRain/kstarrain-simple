@@ -8,5 +8,10 @@ package com.kstarrain.test;
 public class TestSon {
     public static void main(String[] args) {
         new Son();
+//        String fileName = "上传文件MM.XLS";
+//        int i = fileName.lastIndexOf('.');
+//
+//        String suffix = fileName.substring(i);
+//        System.out.println(suffix.toLowerCase());
     }
 }

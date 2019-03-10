@@ -1,44 +1,55 @@
 package com.kstarrain;
 
-import com.kstarrain.pojo.Student;
+import com.kstarrain.service.HSSFWorkbookService;
 import com.kstarrain.utils.TestDataUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
 
 /**
  * @author: DongYu
  * @create: 2019-03-07 19:27
- * @description:
+ * @description: 操作 .xlsx结尾的文件(Excel 2007之后版本)
  */
 public class XSSFTest {
 
 
     @Test
-    public void createExcel_xlsx() throws IOException {
+    public void outputExcel_xlsx(){
 
-        List<Student> data = new ArrayList<>();
-        data.add(TestDataUtils.createStudent1());
-        data.add(TestDataUtils.createStudent2());
-
-        String filePath = "E:\\test1\\01\\haha.txt";
-
-        File file = new File(filePath);
+        String path = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "outputExcel.xls";
 
 
-        boolean mkdirs = file.mkdirs();
+        File file = new File(path);
+        if(!file.getParentFile().exists()){//如果文件的目录不存在
+            file.getParentFile().mkdirs();//创建目录
+        }
 
-        System.out.println(mkdirs);
+        OutputStream output = null;
 
+        try {
+            output = new FileOutputStream(file);
 
+            //生成Excel表格
+            HSSFWorkbook workbook = HSSFWorkbookService.createStudentHSSFWorkbook(TestDataUtils.getStudentList());
+
+            workbook.write(output);
+//            output.write(workbook.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                //关闭输出流
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Test
