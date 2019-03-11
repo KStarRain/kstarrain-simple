@@ -20,10 +20,16 @@ public class JDBCUtils {
 
         ResourceBundle bundle = ResourceBundle.getBundle("properties/jdbc");
 
-        DRIVER = bundle.getString("driver");
-        URL = bundle.getString("url");
-        USERNAME = bundle.getString("username");
-        PASSWORD = bundle.getString("password");
+        DRIVER = bundle.getString("mysql_driver");
+        URL = bundle.getString("mysql_url");
+        USERNAME = bundle.getString("mysql_username");
+        PASSWORD = bundle.getString("mysql_password");
+
+//        DRIVER = bundle.getString("oracle_driver");
+//        URL = bundle.getString("oracle_url");
+//        USERNAME = bundle.getString("oracle_username");
+//        PASSWORD = bundle.getString("oracle_password");
+
 
         /** 注册驱动
          *  JDBC是1997年2月19日，在JDK1.1的版本中发布的，从版本就看得出，JDBC属于Java技术的一些最基础的功能点。
