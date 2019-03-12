@@ -9,7 +9,6 @@ import com.kstarrain.utils.TestDataUtils;
 import org.junit.Test;
 
 import java.sql.*;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -283,7 +282,7 @@ public class JdbcTest {
             //设置保存点
 //            savepoint = conn.setSavepoint();
 
-//            int a = 1/0;
+            int a = 1/0;
             int num2 = studentDao.insertStudent(conn,TestDataUtils.createStudent2());
 
             //事务提交

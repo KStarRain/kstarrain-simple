@@ -20,6 +20,14 @@
             <version>5.1.38</version>
         </dependency>
 
+        <!-- oracle驱动 -->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
+            <version>10.2.0.1.0</version>
+        </dependency>
+
+
         <!-- common 工具类-->
         <dependency>
             <groupId>com.kstarrain</groupId>
