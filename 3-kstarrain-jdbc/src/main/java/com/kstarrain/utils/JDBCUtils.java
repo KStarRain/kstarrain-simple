@@ -20,15 +20,15 @@ public class JDBCUtils {
 
         ResourceBundle bundle = ResourceBundle.getBundle("properties/jdbc");
 
-//        DRIVER = bundle.getString("mysql_driver");
-//        URL = bundle.getString("mysql_url");
-//        USERNAME = bundle.getString("mysql_username");
-//        PASSWORD = bundle.getString("mysql_password");
+        DRIVER = bundle.getString("mysql_driver");
+        URL = bundle.getString("mysql_url");
+        USERNAME = bundle.getString("mysql_username");
+        PASSWORD = bundle.getString("mysql_password");
 
-        DRIVER = bundle.getString("oracle_driver");
-        URL = bundle.getString("oracle_url");
-        USERNAME = bundle.getString("oracle_username");
-        PASSWORD = bundle.getString("oracle_password");
+//        DRIVER = bundle.getString("oracle_driver");
+//        URL = bundle.getString("oracle_url");
+//        USERNAME = bundle.getString("oracle_username");
+//        PASSWORD = bundle.getString("oracle_password");
 
 
         /** 注册驱动
