@@ -1,25 +1,17 @@
 package com.kstarrain;
 
 import com.alibaba.fastjson.JSON;
-import com.kstarrain.pojo.Student;
 import com.kstarrain.utils.TestDataUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.util.TempFile;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: DongYu
  * @create: 2019-03-07 19:27
  * @description:
  */
-public class IOTest {
+public class FileTest {
 
 
     /** OutputStream：它是抽象类，不能创建对象，这里我们需要使用OutputStream类的子类FileOutputStream的对象把数据写到文件中 */
@@ -31,6 +23,8 @@ public class IOTest {
 
         //1:使用File类创建一个要操作的文件路径
         File file = new File(filePath);
+
+        System.out.println(file.length());
 
         if(!file.getParentFile().exists()){//如果文件的目录不存在
             file.getParentFile().mkdirs();//创建目录
@@ -50,7 +44,7 @@ public class IOTest {
             output.write((JSON.toJSONString(TestDataUtils.createStudent1()) + separator).getBytes());
 
             output.write((JSON.toJSONString(TestDataUtils.createStudent2()) + separator).getBytes());
-
+            System.out.println(file.length());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -64,7 +58,7 @@ public class IOTest {
     }
 
 
-    /** InputStream：它是抽象类，不能创建对象，这里我们需要使用InputStream类的子类FileInputStream的对象把数据写到文件中 */
+    /** InputStream：它是抽象类，不能创建对象，这里我们需要使用InputStream类的子类FileInputStream的对象把文件读到内存中 */
     @Test
     public void inputStream(){
 

@@ -25,6 +25,14 @@
             <version>3.8.1</version>
         </dependency>
 
+        <!-- 编码解码器 -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
+
+
         <!-- 阿里巴巴json转化插件 -->
         <dependency>
             <groupId>com.alibaba</groupId>

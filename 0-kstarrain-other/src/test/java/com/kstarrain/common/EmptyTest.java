@@ -1,4 +1,4 @@
-package com.kstarrain;
+package com.kstarrain.common;
 
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -71,7 +71,7 @@ public class EmptyTest {
         System.out.println("==============");
 
         Map<Object, Object> map = null;
-        map = new HashMap<>();
+        map = new HashMap();
         System.out.println(map.size());
         Set<Map.Entry<Object, Object>> entries = map.entrySet();
         for (Map.Entry<Object, Object> entry : entries) {

@@ -110,4 +110,13 @@
     <url-pattern>/config</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>HttpClientController</servlet-name>
+    <servlet-class>com.kstarrain.controller.HttpClientController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HttpClientController</servlet-name>
+    <url-pattern>/httpclient</url-pattern>
+  </servlet-mapping>
+
 </web-app>
