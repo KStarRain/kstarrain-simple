@@ -1,9 +1,6 @@
 package com.kstarrain.test2;
 
-import com.kstarrain.test.User;
-import com.kstarrain.test.User2;
-
-import java.util.ArrayList;
+import com.alibaba.fastjson.JSON;
 
 /**
  * @author: DongYu
@@ -14,7 +11,7 @@ public class MyTest1 {
 
     public static void main(String[] args) {
 
-        ArrayList<Object> objects = new ArrayList<>();
+     /*   ArrayList<Object> objects = new ArrayList<>();
         objects.add("");
         new ArrayList<>(10);
         
@@ -22,9 +19,28 @@ public class MyTest1 {
         System.out.println(user2);
 
         User user = new User();
-        System.out.println(user);
+        System.out.println(user);*/
 
+//        int aNull = Integer.parseInt("");
+//        System.out.println(aNull);
+//        System.out.println("XITC01".matches("XITC01"));
+//        System.out.println("XITC01".matches("^(XITC01)$"));
 
+        System.out.println("XITC01".matches("^X(?!1TC011)*$"));
+
+        System.out.println("XITC01".matches("^(.)*$"));
+        System.out.println("XITC01".matches("^.*$"));
+
+        System.out.println("XITC01".matches("^(?!(XITC011))$"));
+
+        System.out.println("XITC01".matches("^((?!((CQXD)|(CIMS)|(AVIC01)|(XITC01))).)*$"));
+        System.out.println("XITC0".matches("^((?!(XITC01)).)*$"));
+
+        System.out.println("XITC02".matches("^(?!(CQXD|AVIC01|XITC01)).*$"));
+
+        System.out.println(JSON.toJSONString(null));
+
+//        System.out.println("XITC01".matches("[\\d\\D]*"));
     }
 
 }
