@@ -116,7 +116,7 @@ public class FileTest {
 
             byte[] bytes = new byte[1024];
 
-            int len = 0;
+            int len;
             while((len = input.read(bytes)) != -1){
                 output.write(bytes,0,len);
             }
