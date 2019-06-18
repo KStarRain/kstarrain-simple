@@ -1,8 +1,11 @@
 package com.kstarrain.jdk;
 
+import com.alibaba.fastjson.JSON;
+import com.kstarrain.request.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import sun.misc.BASE64Encoder;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
@@ -19,6 +22,8 @@ import java.util.*;
  */
 @Slf4j
 public class HttpUrlTest {
+
+    String readFilePath = "E:" + File.separator + "其他" + File.separator + "cat.jpg";
 
     // boundary就是request头和上传文件内容的分隔符
     final String BOUNDARY = "---------------------------123821742118716";
@@ -214,7 +219,7 @@ public class HttpUrlTest {
 
         //设置file的name，路径
         Map<String, String> fileMap = new HashMap<String, String>();
-        fileMap.put("file", "E:" + File.separator + "其他" + File.separator + "cat.jpg");
+        fileMap.put("file", readFilePath);
 
         HttpURLConnection conn = null;
 
@@ -281,28 +286,18 @@ public class HttpUrlTest {
                     if (inputValue == null) {continue;}
 
                     File file = new File(inputValue);
-                    String filename = file.getName();
+                    if (!file.exists()){continue;}
 
                     //没有传入文件类型，同时根据文件获取不到类型，默认采用application/octet-stream
                     String contentType = new MimetypesFileTypeMap().getContentType(file);
 
-                    if(StringUtils.isNotBlank(contentType)){
-                        if (filename.endsWith(".png")) {
-                            contentType = "image/png";
-                        }else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".jpe")) {
-                            contentType = "image/jpeg";
-                        }else if (filename.endsWith(".gif")) {
-                            contentType = "image/gif";
-                        }else if (filename.endsWith(".ico")) {
-                            contentType = "image/image/x-icon";
-                        }
-                    }else {
+                    if(StringUtils.isBlank(contentType)){
                         contentType = "application/octet-stream";
                     }
 
                     StringBuffer strBuf = new StringBuffer();
                     strBuf.append("\r\n").append("--").append(BOUNDARY).append("\r\n");
-                    strBuf.append("Content-Disposition: form-data; name=\"" + inputName + "\"; filename=\"" + filename + "\"\r\n");
+                    strBuf.append("Content-Disposition: form-data; name=\"" + inputName + "\"; filename=\"" + file.getName() + "\"\r\n");
                     strBuf.append("Content-Type:" + contentType + "\r\n\r\n");
                     out.write(strBuf.toString().getBytes());
 
@@ -368,8 +363,8 @@ public class HttpUrlTest {
     @Test
     public void doPostJSON() {
 
-        HttpURLConnection conn = null;
 
+        HttpURLConnection conn = null;
 
         OutputStreamWriter out = null;
 
@@ -408,9 +403,29 @@ public class HttpUrlTest {
             //application/json;charset=UTF-8
             conn.setRequestProperty("Content-Type","application/json;charset=UTF-8");
 
+
+
+            File file = new File(readFilePath);
+            if (!file.exists()){return;}
+
+            FileInputStream input = new FileInputStream(file);
+            // input.available()返回文件的字节长度
+            byte[] bytes = new byte[input.available()];
+            // 将文件中的内容读入到数组中
+            input.read(bytes);
+            //将字节流数组转换为字符串
+            String strBase64 = Base64.getEncoder().encodeToString(bytes);
+            input.close();
+
+
             //POST参数  将参数信息 输出到连接中 （我方服务器 输出到 目标服务器）
+            RequestParam requestParam = new RequestParam();
+            requestParam.setUserName("吕布");
+            requestParam.setKey("1234qwer");
+            requestParam.setFile(strBase64);
+
             out = new OutputStreamWriter(conn.getOutputStream());
-            out.write("{\"param\":\"test\"}");
+            out.write(JSON.toJSONString(requestParam));
             out.flush();
 
 

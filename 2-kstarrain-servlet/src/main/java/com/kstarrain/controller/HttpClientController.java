@@ -1,12 +1,15 @@
 package com.kstarrain.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.kstarrain.request.RequestParam;
 import com.kstarrain.response.ResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -239,22 +242,51 @@ public class HttpClientController extends HttpServlet {
         BufferedReader reader = null;
         try {
             reader = request.getReader();
-            StringBuffer json = new StringBuffer();
+            StringBuffer requestStrB = new StringBuffer();
             String temp;
             // 循环遍历一行一行读取数据
             while ((temp = reader.readLine()) != null) {
-                json.append(temp);
-                json.append("\r\n");
+                requestStrB.append(temp);
+                requestStrB.append("\r\n");
             }
-            System.out.println(json.toString());
+
+            String requestStr = requestStrB.toString();
+            System.out.println("request ：" + requestStr);
+
+            RequestParam requestParam = JSON.parseObject(requestStr, RequestParam.class);
+
+            if (StringUtils.isNotBlank(requestParam.getFile())){
+
+                String toPath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + "catFromJson.jpg";
 
 
-            //response
-            response.setContentType("application/json;charset=UTF-8");
+                OutputStream outputStream = null;
+                try {
+                    outputStream = new FileOutputStream(new File(toPath));
+                    outputStream.write(Base64.getDecoder().decode(requestParam.getFile()));
+
+                }finally {
+                    try {
+                        if (outputStream != null) { // 安全关闭
+                            outputStream.close();
+                        }
+                    } catch (IOException e) {
+                        log.error(e.getMessage(),e);
+                    }
+
+                }
+
+            }
+
+
+
+
 
             ResultDTO<String> resultDTO = new ResultDTO<>();
             resultDTO.setMessage("成功");
 
+            //response
+            response.setContentType("application/json;charset=UTF-8");
             //返回json
             PrintWriter writer = response.getWriter();
             writer.write(JSON.toJSONString(resultDTO));
