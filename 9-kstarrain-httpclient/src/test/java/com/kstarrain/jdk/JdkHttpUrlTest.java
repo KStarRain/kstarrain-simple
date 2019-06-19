@@ -3,6 +3,7 @@ package com.kstarrain.jdk;
 import com.alibaba.fastjson.JSON;
 import com.kstarrain.request.RequestParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import sun.misc.BASE64Encoder;
@@ -21,12 +22,13 @@ import java.util.*;
  * @description:
  */
 @Slf4j
-public class HttpUrlTest {
+public class JdkHttpUrlTest {
 
-    String readFilePath = "E:" + File.separator + "其他" + File.separator + "cat.jpg";
+    final String requestUrl = "http://localhost:8080/servlet/httpclient";
+    final String readFilePath = "E:" + File.separator + "其他" + File.separator + "cat.jpg";
 
     // boundary就是request头和上传文件内容的分隔符
-    final String BOUNDARY = "---------------------------123821742118716";
+    final String BOUNDARY = "123821742118716";
 
     @Test
     public void doGet() {
@@ -36,10 +38,33 @@ public class HttpUrlTest {
         BufferedReader reader = null;
         try {
 
-            String httpUrl = "http://localhost:8080/servlet/httpclient?username=" + URLEncoder.encode("貂蝉", "UTF-8");
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("userName", "董宇");
+            params.put("key", "1234qwer");
 
+            //拼接参数
+            StringBuilder urlbuf = new StringBuilder(requestUrl);
+            if (MapUtils.isNotEmpty(params)){
+                int num = 0;
+                for (Map.Entry<String, String> entry : params.entrySet()) {
+
+                    if (!urlbuf.toString().contains("?")) {
+                        urlbuf.append("?");
+                    }
+                    if (num != 0) {
+                        urlbuf.append("&");
+                    }
+                    urlbuf.append(entry.getKey())
+                          .append("=")
+                          .append(entry.getValue() == null ? "" : URLEncoder.encode(entry.getValue()));
+                    num++;
+                }
+            }
+
+
+            System.out.println(urlbuf.toString());
             // 创建远程url连接对象
-            URL url = new URL(httpUrl);
+            URL url = new URL(urlbuf.toString());
             // 通过远程url连接对象打开一个连接，强转成httpURLConnection类
             conn = (HttpURLConnection) url.openConnection();
             // 设置连接方式：get
@@ -68,7 +93,7 @@ public class HttpUrlTest {
                 System.out.println(sbf.toString());
 
             }else {
-                System.out.println(conn.getResponseCode());
+                System.out.println("错误码-" + conn.getResponseCode());
             }
         } catch (MalformedURLException e) {
             log.error(e.getMessage(),e);
@@ -101,10 +126,9 @@ public class HttpUrlTest {
         BufferedReader reader = null;
 
         try {
-            String httpUrl = "http://localhost:8080/servlet/httpclient";
 
             // 创建远程url连接对象
-            URL url = new URL(httpUrl);
+            URL url = new URL(requestUrl);
             // 通过远程url连接对象打开连接
             conn = (HttpURLConnection) url.openConnection();
             // 设置连接请求方式
@@ -166,7 +190,7 @@ public class HttpUrlTest {
                 System.out.println(responseContent.toString());
 
             }else{
-                System.out.println(conn.getResponseCode());
+                System.out.println("错误码-" + conn.getResponseCode());
             }
 
         } catch (MalformedURLException e) {
@@ -224,30 +248,17 @@ public class HttpUrlTest {
         HttpURLConnection conn = null;
 
         OutputStream out = null;
-
         BufferedReader reader = null;
 
         try {
-            String httpUrl = "http://localhost:8080/servlet/httpclient";
 
-            // 创建远程url连接对象
-            URL url = new URL(httpUrl);
-            // 通过远程url连接对象打开连接
+            URL url = new URL(requestUrl);
             conn = (HttpURLConnection) url.openConnection();
-            // 设置连接请求方式
             conn.setRequestMethod("POST");
-            // 设置连接主机服务器超时时间：15000毫秒
             conn.setConnectTimeout(15000);
-            // 设置读取主机服务器返回数据超时时间：60000毫秒
             conn.setReadTimeout(60000);
-
-
-            // 发送POST请求必须设置如下两行
-            // 默认值为：false，当向远程服务器传送数据/写数据时，需要设置为true
             conn.setDoOutput(true);
-            // 默认值为：true，当前向远程服务读取数据时，设置为true，该参数可有可无
             conn.setDoInput(true);
-            //不允许缓存
             conn.setUseCaches(false);
 
             conn.setRequestProperty("Cookie","testMethod=POST;accessToken=2c81fd43-a991-4f78-bbce-21be2054431e_105502;type=香香");
@@ -268,7 +279,7 @@ public class HttpUrlTest {
                     Map.Entry entry = (Map.Entry) iter.next();
                     String inputName = (String) entry.getKey();
                     String inputValue = (String) entry.getValue();
-                    if (inputValue == null) {continue;}
+
                     strBuf.append("\r\n").append("--").append(BOUNDARY).append("\r\n");
                     strBuf.append("Content-Disposition: form-data; name=\"" + inputName + "\"\r\n\r\n");
                     strBuf.append(inputValue);
@@ -334,7 +345,7 @@ public class HttpUrlTest {
                 System.out.println(responseContent.toString());
 
             }else{
-                System.out.println(conn.getResponseCode());
+                System.out.println("错误码-" + conn.getResponseCode());
             }
 
         } catch (MalformedURLException e) {
@@ -363,34 +374,19 @@ public class HttpUrlTest {
     @Test
     public void doPostJSON() {
 
-
         HttpURLConnection conn = null;
 
         OutputStreamWriter out = null;
-
         BufferedReader reader = null;
 
         try {
-            String httpUrl = "http://localhost:8080/servlet/httpclient";
-
-            // 创建远程url连接对象
-            URL url = new URL(httpUrl);
-            // 通过远程url连接对象打开连接
+            URL url = new URL(requestUrl);
             conn = (HttpURLConnection) url.openConnection();
-            // 设置连接请求方式
             conn.setRequestMethod("POST");
-            // 设置连接主机服务器超时时间：15000毫秒
             conn.setConnectTimeout(15000);
-            // 设置读取主机服务器返回数据超时时间：60000毫秒
             conn.setReadTimeout(60000);
-
-
-            // 发送POST请求必须设置如下两行
-            // 默认值为：false，当向远程服务器传送数据/写数据时，需要设置为true
             conn.setDoOutput(true);
-            // 默认值为：true，当前向远程服务读取数据时，设置为true，该参数可有可无
             conn.setDoInput(true);
-            //不允许缓存
             conn.setUseCaches(false);
 
             conn.setRequestProperty("Cookie","testMethod=POST;accessToken=2c81fd43-a991-4f78-bbce-21be2054431e_105502;type=香香");
@@ -447,7 +443,7 @@ public class HttpUrlTest {
                 System.out.println(responseContent.toString());
 
             }else{
-                System.out.println(conn.getResponseCode());
+                System.out.println("错误码-" + conn.getResponseCode());
             }
 
         } catch (MalformedURLException e) {

@@ -50,12 +50,15 @@ public class HttpClientController extends HttpServlet {
         }
 
         System.out.println("Content-Type : " + request.getHeader("Content-Type"));
-        System.out.println("username : " + request.getParameter("username"));
+        System.out.println("userName : " + request.getParameter("userName"));
+        System.out.println("key : " + request.getParameter("key"));
 
+        ResultDTO<String> resultDTO = new ResultDTO<>();
+        resultDTO.setMessage("成功");
 
         //响应
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().append(JSON.toJSONString(new ResultDTO<>(new ArrayList<>())));
+        response.getWriter().append(JSON.toJSONString(resultDTO));
 
     }
 
@@ -92,14 +95,17 @@ public class HttpClientController extends HttpServlet {
 
             System.out.println("userName : " + request.getParameter("userName"));
             System.out.println("key : " + request.getParameter("key"));
+
+            this.returnJsonResponse(response);
         }
         //接受 application/json;charset=UTF-8 或 application/json
-        else if (contentType.startsWith("application/json")){
+        else if (contentType != null && contentType.startsWith("application/json")){
 
             this.parseJsonData(request,response);
+            this.returnJsonResponse(response);
         }
         //接受 multipart/form-data; 此时通过request.getParameter获取不到值 通过commons-io和commons-fileupload进行取值
-        else if (contentType.startsWith("multipart/form-data")){
+        else if (contentType != null && contentType.startsWith("multipart/form-data")){
 
             this.parseMultipartData(request,response);
         }
@@ -116,7 +122,7 @@ public class HttpClientController extends HttpServlet {
             List<FileItem> fileItems = upload.parseRequest(request);
             for (FileItem fileItem : fileItems) {
 
-                //提交的表单中，文件键值为aFile
+                //提交的表单中，文件键值为file
                 if(fileItem.getFieldName().equals("file")){
 
                     response.setHeader("Accept-Ranges","bytes");
@@ -176,8 +182,6 @@ public class HttpClientController extends HttpServlet {
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
-
-
 
             try {
                 output.close();
@@ -273,25 +277,8 @@ public class HttpClientController extends HttpServlet {
                     } catch (IOException e) {
                         log.error(e.getMessage(),e);
                     }
-
                 }
-
             }
-
-
-
-
-
-            ResultDTO<String> resultDTO = new ResultDTO<>();
-            resultDTO.setMessage("成功");
-
-            //response
-            response.setContentType("application/json;charset=UTF-8");
-            //返回json
-            PrintWriter writer = response.getWriter();
-            writer.write(JSON.toJSONString(resultDTO));
-            writer.close();
-
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
@@ -304,6 +291,19 @@ public class HttpClientController extends HttpServlet {
                 }
             }
         }
+    }
+
+    private void returnJsonResponse(HttpServletResponse response) throws IOException {
+
+        ResultDTO<String> resultDTO = new ResultDTO<>();
+        resultDTO.setMessage("成功");
+
+        //response
+        response.setContentType("application/json;charset=UTF-8");
+        //返回json
+        PrintWriter writer = response.getWriter();
+        writer.write(JSON.toJSONString(resultDTO));
+        writer.close();
     }
 
     @Override
