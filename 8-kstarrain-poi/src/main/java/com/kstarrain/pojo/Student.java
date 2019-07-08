@@ -10,6 +10,7 @@ import java.util.Date;
  * @create: 2018-11-13 15:18
  * @description:
  */
+
 @Data
 public class Student {
 
@@ -19,12 +20,17 @@ public class Student {
 
     Date birthday;
 
+    String birthdayStr;
+
     BigDecimal money;
 
     Date createDate;
 
+    String createDateStr;
+
     Date updateDate;
 
-    String aliveFlag;
+    String updateDateStr;
 
+    String aliveFlag;
 }

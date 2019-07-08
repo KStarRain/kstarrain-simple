@@ -2,6 +2,8 @@ package com.kstarrain;
 
 import com.kstarrain.pojo.Student;
 import com.kstarrain.service.HSSFWorkbookService;
+import com.kstarrain.utils.Excel;
+import com.kstarrain.utils.ExcelUtils;
 import com.kstarrain.utils.TestDataUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -11,9 +13,12 @@ import org.junit.Test;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: DongYu
@@ -24,15 +29,17 @@ import java.util.List;
 public class HSSFTest {
 
 
+    String readPath = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "学生表1.xls";
+
+    String writePath = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "学生表2.xls";
+
+
     @Test
     public void outputExcel_xls(){
 
-        String path = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "学生表.xls";
-
-
-        File file = new File(path);
-        if(!file.getParentFile().exists()){//如果文件的目录不存在
-            file.getParentFile().mkdirs();//创建目录
+        File file = new File(writePath);
+        if(!file.getParentFile().exists()){ //如果文件的目录不存在
+            file.getParentFile().mkdirs(); //创建目录
         }
 
         OutputStream output = null;
@@ -60,22 +67,17 @@ public class HSSFTest {
     @Test
     public void inputExcel_xls() {
 
-
         List<Student> students = new ArrayList();
-
-        String path = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "学生表.xls";
 
         InputStream input = null;
         try {
-            input = new FileInputStream(path);
+            input = new FileInputStream(readPath);
 
             //读取excel
             HSSFWorkbook workbook = new HSSFWorkbook(input);
 
             //获取第一个sheet
             HSSFSheet sheet = workbook.getSheetAt(0);
-
-            int lastRowNum = sheet.getLastRowNum();
 
             for (int rowIndex = 0; rowIndex < sheet.getLastRowNum(); rowIndex++) {
 
@@ -107,4 +109,91 @@ public class HSSFTest {
         }
 
     }
+
+
+    @Test
+    public void writeXlsExcelThroughUtils() {
+
+        OutputStream output = null;
+
+        try {
+            output = new FileOutputStream(writePath);
+
+            Map<String, String> titlePropertyMap = new LinkedHashMap<>();
+            titlePropertyMap.put("主键","id");
+            titlePropertyMap.put("姓名","name");
+            titlePropertyMap.put("生日","birthday");
+            titlePropertyMap.put("余额","money");
+            titlePropertyMap.put("创建时间","createDate");
+            titlePropertyMap.put("更新时间","updateDate");
+            titlePropertyMap.put("删除标记","aliveFlag");
+
+            Excel excel = ExcelUtils.createByBeans(Excel.Type.XLS,TestDataUtils.getStudentList(),titlePropertyMap);
+            excel.write(output);
+            System.out.println();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            if (output != null){
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+    }
+
+
+
+    @Test
+    public void readXlsExcelThroughUtils() {
+
+        InputStream input = null;
+        try {
+            input = new FileInputStream(writePath);
+
+            Map<String, String> titlePropertyMap = new LinkedHashMap<>();
+            titlePropertyMap.put("主键","id");
+            titlePropertyMap.put("姓名","name");
+            titlePropertyMap.put("生日","birthday");
+            titlePropertyMap.put("余额","money");
+            titlePropertyMap.put("创建时间","createDate");
+            titlePropertyMap.put("更新时间","updateDate");
+            titlePropertyMap.put("删除标记","aliveFlag");
+
+            Map<String, DateFormat> dateStrPropertyFormat = new LinkedHashMap<>();
+            dateStrPropertyFormat.put("birthday",new SimpleDateFormat("yyyy-MM-dd"));
+            dateStrPropertyFormat.put("createDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+            dateStrPropertyFormat.put("updateDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
+
+            Excel excel = ExcelUtils.create(writePath, input).selectSheet(0);
+            List<Student> students = ExcelUtils.readToBeans(excel, Student.class, titlePropertyMap, dateStrPropertyFormat);
+
+            System.out.println(students);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            if (input != null){
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+    }
+
+
+
+
 }

@@ -1,6 +1,7 @@
 package com.kstarrain.common;
 
 
+import com.kstarrain.pojo.Student;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,12 +30,25 @@ public class EmptyTest {
 
     @Test
     public void testList(){
-        List<String> list = null;
+//        List<String> list = null;
 //        list = new ArrayList();
-//        list.add("1");
-//        System.out.println(list.isEmpty());
-        System.out.println("-------------------------");
-        System.out.println(CollectionUtils.isEmpty(list));
+//        list.add(null);
+////        System.out.println(list.isEmpty());
+//        for (String s : list) {
+//            System.out.println(s);
+//        }
+//        System.out.println("-------------------------");
+//        System.out.println(CollectionUtils.isEmpty(list));
+
+
+
+        List<Student> list2 = null;
+        list2 = new ArrayList();
+        list2.add(null);
+        for (Student s2 : list2) {
+            System.out.println(s2);
+        }
+
     }
 
     @Test

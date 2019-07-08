@@ -1,8 +1,9 @@
 package com.kstarrain;
 
-import com.kstarrain.service.HSSFWorkbookService;
+import com.kstarrain.service.XSSFWorkbookService;
+import com.kstarrain.utils.Excel;
+import com.kstarrain.utils.ExcelUtils;
 import com.kstarrain.utils.TestDataUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -22,10 +23,11 @@ public class XSSFTest {
     @Test
     public void outputExcel_xlsx(){
 
-        String path = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "outputExcel.xls";
+        String readPath = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "学生表1.xlsx";
 
+        String writePath = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "学生表2.xlsx";
 
-        File file = new File(path);
+        File file = new File(writePath);
         if(!file.getParentFile().exists()){//如果文件的目录不存在
             file.getParentFile().mkdirs();//创建目录
         }
@@ -36,7 +38,7 @@ public class XSSFTest {
             output = new FileOutputStream(file);
 
             //生成Excel表格
-            HSSFWorkbook workbook = HSSFWorkbookService.createStudentHSSFWorkbook(TestDataUtils.getStudentList());
+            XSSFWorkbook workbook = XSSFWorkbookService.createStudentXSSFWorkbook(TestDataUtils.getStudentList());
 
             workbook.write(output);
 //            output.write(workbook.getBytes());
@@ -73,5 +75,22 @@ public class XSSFTest {
                 System.out.print(value  + " ");
             }
         }
+    }
+
+
+
+
+    @Test
+    public void readFromUtils() throws IOException {
+
+        String path = "E:" + File.separator + "test" + File.separator + "poi"  + File.separator + "outputExcel.xlsx";
+
+        File file = new File(path);
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        XSSFWorkbook xssfSheets = new XSSFWorkbook(fileInputStream);
+
+        Excel excel = ExcelUtils.create(file.getName(), fileInputStream);
+
     }
 }

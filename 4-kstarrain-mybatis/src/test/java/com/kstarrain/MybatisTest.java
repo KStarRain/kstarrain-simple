@@ -5,8 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.kstarrain.mapper.StudentMapper;
 import com.kstarrain.pojo.Student;
 import com.kstarrain.utils.TestDataUtils;
-import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -14,12 +14,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author: Dong Yu
@@ -42,6 +38,8 @@ public class MybatisTest {
 
             StudentMapper userMapper = session.getMapper(StudentMapper.class);
             Student student = userMapper.findStudentById("董宇2\" or 1=\"1");
+
+
 
             if (student != null){
                 System.out.println(student.toString());
@@ -117,11 +115,18 @@ public class MybatisTest {
 
             InputStream inputStream = Resources.getResourceAsStream("mybatis/mybatis-config.xml");
             SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(inputStream);
-            SqlSession session = factory.openSession();
-            //---------------
-            StudentMapper userMapper = session.getMapper(StudentMapper.class);
 
-            int count = userMapper.insertStudent(TestDataUtils.createStudent1());
+            /**-------- 方法一  -------*/
+            /*SqlSession session = factory.openSession();
+            StudentMapper userMapper = session.getMapper(StudentMapper.class);
+            int count = userMapper.insertStudent(TestDataUtils.createStudent1());*/
+
+
+            /**-------- 方法二  -------*/
+            SqlSession session = factory.openSession(ExecutorType.BATCH, false);//获取批量方式的sqlsession
+            int count = session.insert(StudentMapper.class.getName() + ".insertStudent", TestDataUtils.createStudent1());
+
+
             session.commit();   //增删改，一定一定要加上commit操作
             System.out.println(count);
             //--------------

@@ -67,7 +67,7 @@
                 <!--serverTimezone=GMT%2B8  时区为东八区-->
                 <property name="url" value="jdbc:mysql://localhost:3306/db_kstarrain?useSSL=false"></property>
                 <property name="username" value="root"></property>
-                <property name="password" value="1234qwer"></property>
+                <property name="password" value="qwer1234"></property>
             </dataSource>
         </environment>
     </environments>
