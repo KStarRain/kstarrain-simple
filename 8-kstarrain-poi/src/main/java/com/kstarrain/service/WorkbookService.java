@@ -3,8 +3,10 @@ package com.kstarrain.service;
 import com.kstarrain.pojo.Student;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.text.SimpleDateFormat;
@@ -16,12 +18,36 @@ import java.util.List;
  * @create: 2019-03-10 12:09
  * @description:
  */
-public class XSSFWorkbookService {
+public class WorkbookService {
 
-    public static XSSFWorkbook createStudentXSSFWorkbook(List<Student> data) {
+    public static Workbook createHSSFWorkbook(List<Student> data) {
 
         /** 创建一个workbook，对应一个Excel文件 */
-        XSSFWorkbook workbook = new XSSFWorkbook();
+        Workbook workbook = new HSSFWorkbook();
+
+        packageData(workbook, data);
+
+        return workbook;
+    }
+
+    public static Workbook createXSSFWorkbook(List<Student> data) {
+
+        Workbook workbook = new XSSFWorkbook();
+        packageData(workbook, data);
+        return workbook;
+    }
+
+    public static Workbook createSXSSFWorkbook(List<Student> data) {
+
+        //这样表示SXSSFWorkbook只会保留100条数据在内存中，其它的数据都会写到磁盘里，这样的话占用的内存就会很少
+        Workbook workbook = new SXSSFWorkbook(new XSSFWorkbook(), 100);
+        packageData(workbook, data);
+        return workbook;
+    }
+
+
+
+    private static void packageData(Workbook workbook, List<Student> data) {
 
         /** 在workbook中添加一个sheet,对应Excel文件中的sheet */
         Sheet sheet = workbook.createSheet("学生表一");
@@ -86,7 +112,6 @@ public class XSSFWorkbookService {
         }
 
 
-
         /** 在sheet中生成数据行 */
         for (int i = 0; i < data.size(); i++) {
             Row dataRow = sheet.createRow(i + 1);
@@ -94,13 +119,14 @@ public class XSSFWorkbookService {
             Student student = data.get(i);
             dataRow.createCell(0).setCellValue(student.getId());
             dataRow.createCell(1).setCellValue(student.getName());
-            dataRow.createCell(2).setCellValue(new SimpleDateFormat("yyyy/MM/dd").format(student.getBirthday()));
+            dataRow.createCell(2).setCellValue(new SimpleDateFormat("yyyy-MM-dd").format(student.getBirthday()));
             dataRow.createCell(3).setCellValue(student.getMoney().doubleValue());
             dataRow.createCell(4).setCellValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(student.getCreateDate()));
             dataRow.createCell(5).setCellValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(student.getUpdateDate()));
-            dataRow.createCell(6).setCellValue(Integer.valueOf(student.getAliveFlag()));
+            dataRow.createCell(6).setCellValue(student.getAliveFlag());
         }
 
-        return workbook;
     }
+
+
 }

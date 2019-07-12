@@ -17,7 +17,8 @@ public class Excel {
 
 	public enum Type {
 		XLS(".xls"),
-		XLSX(".xlsx")
+		XLSX(".xlsx"),
+		LARGE_XLSX(".xlsx") //用于导出上万条数据，只支持写，不支持读
 		;
 
 		private String suffix;

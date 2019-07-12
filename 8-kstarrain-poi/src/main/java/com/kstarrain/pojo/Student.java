@@ -20,17 +20,11 @@ public class Student {
 
     Date birthday;
 
-    String birthdayStr;
-
     BigDecimal money;
 
     Date createDate;
 
-    String createDateStr;
-
     Date updateDate;
 
-    String updateDateStr;
-
-    String aliveFlag;
+    Integer aliveFlag;
 }

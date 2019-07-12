@@ -2,18 +2,20 @@ package com.kstarrain;
 
 import org.junit.Test;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author: Dong Yu
  * @create: 2019-03-21 15:58
  * @description:
  */
-public class ParamTest {
+public class RegexTest {
 
     @Test
     public void test1(){
 
-//        System.out.println(8 >> 2 );
-       /* String line = "110000     北京市";
+        String line = "110000     北京市";
         Matcher postcodeMatcher = Pattern.compile("([0-9]+)").matcher(line);
         Matcher nameMatcher = Pattern.compile("([\u4e00-\u9fa5]+)").matcher(line);
         boolean b1 = postcodeMatcher.find();
@@ -23,17 +25,17 @@ public class ParamTest {
             String name = nameMatcher.group(1);
 
             System.out.println();
-        }*/
-
-        ParamTest paramTest = new ParamTest();
-        int i = 0;
-        paramTest.abc(i);
-        i = i ++;
-        System.out.println(i);
+        }
     }
 
-    private void abc(int i) {
-        i ++;
+    @Test
+    public void test2() {
+
+        String o = "^(?!(CQXD|CIMS|AVIC01|XITC01|ZRT01|YXITC01)).*$";
+        o = "BoHai|LHFK02|LHFK03|LHFK04|LHFK05|LHFK06|LHFK07|LHFK08|LHFK09|SMABS|Syndicated|YLDZ";
+
+        System.out.println("BOHAI".matches(o));
+
     }
 
 }

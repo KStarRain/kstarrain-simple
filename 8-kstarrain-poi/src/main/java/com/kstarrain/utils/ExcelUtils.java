@@ -6,16 +6,14 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: DongYu
@@ -23,7 +21,7 @@ import java.util.Map;
  * @description: Excel 工具类  请了解清除大致用法之后再用，不然有坑
  *               HSSFWorkbook 操作 .xls 结尾的文件(Excel 2003之前的版本) 导出条数上限是65535行、256列
  *               XSSFWorkbook 操作 .xlsx结尾的文件(Excel 2007之后的版本) 导出条数上限是1048576行,16384列
- *               SXSSFWorkbook 如果数据量超过了此上限,那么可以使用SXSSFWorkbook来导出。实际上上万条数据，甚至上千条数据就可以考虑使用SXSSFWorkbook了
+ *               SXSSFWorkbook 只支持写，不支持读，写出.xlsx结尾的文件，如果数据量超过了此上限,那么可以使用SXSSFWorkbook来导出。实际上上万条数据，甚至上千条数据就可以考虑使用SXSSFWorkbook了
  */
 @Slf4j
 public class ExcelUtils {
@@ -38,6 +36,7 @@ public class ExcelUtils {
         switch (excelType) {
             case XLS: return new Excel(new HSSFWorkbook(), excelType);
             case XLSX: return new Excel(new XSSFWorkbook(), excelType);
+            case LARGE_XLSX: return new Excel(new SXSSFWorkbook(new XSSFWorkbook(), 100), excelType);
             default: throw new RuntimeException("Excel type is error. ");
         }
     }
@@ -49,12 +48,11 @@ public class ExcelUtils {
     public static Excel create(String fileName, InputStream in) throws IOException {
         String suffix = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
 
-        for (Excel.Type type : Excel.Type.values()) {
-            if (type.getSuffix().equals(suffix)) {
-                return create(type, in);
-            }
+        if (Excel.Type.XLS.getSuffix().equals(suffix)){
+            return create(Excel.Type.XLS, in);
+        } else {
+            return create(DEFAULT_EXCEL_TYPE, in);
         }
-        return create(DEFAULT_EXCEL_TYPE, in);
     }
 
     public static Excel create(Excel.Type excelType, InputStream in) throws IOException {
@@ -94,19 +92,27 @@ public class ExcelUtils {
     }
 
     public static <T> Excel createByBeans(List<T> beans, Map<String, String> titlePropertyMap) throws ReflectiveOperationException {
-        return createByBeans(DEFAULT_EXCEL_TYPE, beans, titlePropertyMap);
+        return createByBeans(DEFAULT_EXCEL_TYPE, beans, titlePropertyMap, null);
     }
 
+    public static <T> Excel createByBeans(List<T> beans, Map<String, String> titlePropertyMap, Map<String, DateFormat> propertyDateFormatMap) throws ReflectiveOperationException {
+        return createByBeans(DEFAULT_EXCEL_TYPE, beans, titlePropertyMap, propertyDateFormatMap);
+    }
+
+    public static <T> Excel createByBeans(Excel.Type excelType, List<T> beans, Map<String, String> titlePropertyMap) throws ReflectiveOperationException {
+        return createByBeans(excelType, beans, titlePropertyMap, null);
+    }
 
     /**
      * @param excelType
      * @param beans
-     * @param titlePropertyMap 数据标题与bean中属性的映射Map（例如： key：姓名;  value:name）
+     * @param titlePropertyMap excel中标题名字与bean中属性名字的映射Map [例如： key -- 姓名;  value -- name]
+     * @param propertyDateFormatMap 对待bean中的Date转化为excel表格中的字符串时间特殊处理 [例如： key -- birthday; value -- new SimpleDateFormat("yyyy-MM-dd")]
      * @param <T>
      * @return
      * @throws ReflectiveOperationException
      */
-    public static <T> Excel createByBeans(Excel.Type excelType, List<T> beans, Map<String, String> titlePropertyMap) throws ReflectiveOperationException {
+    public static <T> Excel createByBeans(Excel.Type excelType, List<T> beans, Map<String, String> titlePropertyMap, Map<String, DateFormat> propertyDateFormatMap) throws ReflectiveOperationException {
 
         if (CollectionUtils.isEmpty(beans)) {
             throw new IllegalArgumentException("Beans is empty. ");
@@ -117,13 +123,11 @@ public class ExcelUtils {
         }
 
 
-
         Map<String, Method> clazzMethodMap = new HashMap<>();
         Class<?> clazz = beans.get(0).getClass();
         for (Method method : clazz.getMethods()) {
             clazzMethodMap.put(method.getName(),method);
         }
-
 
         List<Method> usefulGetMethods = new ArrayList<>();
         List<Object> rowContent = new ArrayList<>();
@@ -146,6 +150,14 @@ public class ExcelUtils {
             rowContent.clear();
             for (Method method : usefulGetMethods) {
                 Object invoke = method.invoke(beans.get(i));
+
+                if (MapUtils.isNotEmpty(propertyDateFormatMap) && Date.class.equals(method.getReturnType())){
+                    String propertyName = StringUtils.uncapitalize(method.getName().substring(3));
+                    DateFormat dateFormat = propertyDateFormatMap.get(propertyName);
+                    if (dateFormat != null){
+                        invoke = dateFormat.format((Date)invoke);
+                    }
+                }
                 rowContent.add(invoke);
             }
             result.writeRow(i + 1, rowContent);
@@ -154,19 +166,24 @@ public class ExcelUtils {
         return result;
     }
 
-    /*public static <T> List<T> readToBeans(Excel excel, Class<T> clazz) throws ReflectiveOperationException {
-        return readToBeans(excel, clazz, null);
-    }*/
+
+
+    public static <T> List<T> readToBeans(Excel excel, Class<T> clazz,  Map<String, String> titlePropertyMap) throws ReflectiveOperationException, ParseException {
+        return readToBeans(excel, clazz, titlePropertyMap, null);
+    }
 
     /**
+     * 读取excel中数据转化为bean
      * @param excel
-     * @param clazz
-     * @param titlePropertyMap  读取excel
+     * @param clazz                  需要转化成的bean.Class
+     * @param titlePropertyMap       excel中标题名字与bean中属性名字的映射Map [例如： key -- 姓名;  value -- name]
+     * @param propertyDateFormatMap  对待excel表格中的字符串时间转化为bean中的Date特殊处理 [例如： key -- birthday; value -- new SimpleDateFormat("yyyy-MM-dd")]
      * @param <T>
      * @return
      * @throws ReflectiveOperationException
+     * @throws ParseException
      */
-    public static <T> List<T> readToBeans(Excel excel, Class<T> clazz, Map<String, String> titlePropertyMap, Map<String, DateFormat> dateStrPropertyFormat) throws ReflectiveOperationException, ParseException {
+    public static <T> List<T> readToBeans(Excel excel, Class<T> clazz, Map<String, String> titlePropertyMap, Map<String, DateFormat> propertyDateFormatMap) throws ReflectiveOperationException, ParseException {
 
         Integer lastRowNum = excel.getLastRowNum();
         if (lastRowNum <= 0) {
@@ -209,20 +226,16 @@ public class ExcelUtils {
                 Method usefulSetMethod = usefulSetMethods.get(j);
                 Class<?> parameterType = usefulSetMethod.getParameterTypes()[0];
                 if (!cellValue.getClass().equals(parameterType)) {
-
-                    if (MapUtils.isNotEmpty(dateStrPropertyFormat)){
-                        if (cellValue instanceof String){
-
-                            DateFormat dateFormat = dateStrPropertyFormat.get(StringUtils.uncapitalize(usefulSetMethod.getName().substring(3)));
-                            if (dateFormat == null){
-                                cellValue = ConvertUtils.convert(cellValue, parameterType);
-                            }else {
-                                cellValue = dateFormat.parse((String)cellValue);
-                            }
+                    if (MapUtils.isNotEmpty(propertyDateFormatMap)
+                            && String.class.equals(cellValue.getClass())
+                            && Date.class.equals(parameterType)){
+                        String propertyName = StringUtils.uncapitalize(usefulSetMethod.getName().substring(3));
+                        DateFormat dateFormat = propertyDateFormatMap.get(propertyName);
+                        if (dateFormat != null){
+                            cellValue = dateFormat.parse((String)cellValue);
                         }else {
-                            cellValue = ConvertUtils.convert(cellValue, parameterType);
+                            throw new IllegalArgumentException("String convert Date failed because the dateFormat of property [" + propertyName + "] mapping could not be found in propertyDateFormatMap. ");
                         }
-
                     }else {
                         cellValue = ConvertUtils.convert(cellValue, parameterType);
                     }

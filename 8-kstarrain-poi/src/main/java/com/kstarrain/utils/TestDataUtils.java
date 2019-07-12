@@ -25,7 +25,7 @@ public class TestDataUtils {
         student1.setMoney(new BigDecimal("1314.98"));
         student1.setCreateDate(new Date());
         student1.setUpdateDate(new Date());
-        student1.setAliveFlag("1");
+        student1.setAliveFlag(1);
         return student1;
     }
 
@@ -41,7 +41,7 @@ public class TestDataUtils {
         student2.setMoney(new BigDecimal("521.98"));
         student2.setCreateDate(new Date());
         student2.setUpdateDate(new Date());
-        student2.setAliveFlag("1");
+        student2.setAliveFlag(1);
         return student2;
     }
 
