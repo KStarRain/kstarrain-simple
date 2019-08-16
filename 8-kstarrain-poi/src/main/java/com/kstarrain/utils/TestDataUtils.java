@@ -17,6 +17,7 @@ public class TestDataUtils {
         Student student1 = new Student();
         student1.setId(UUID.randomUUID().toString().replace("-", ""));
         student1.setName("貂蝉Mm");
+        student1.setMoblie("15800704814");
         try {
             student1.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1991-09-07 23:24:51"));
         } catch (ParseException e) {
@@ -33,6 +34,7 @@ public class TestDataUtils {
         Student student2 = new Student();
         student2.setId(UUID.randomUUID().toString().replace("-", ""));
         student2.setName("吕布Gg");
+        student2.setMoblie("13836843570");
         try {
             student2.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1990-09-07 23:24:51"));
         } catch (ParseException e) {

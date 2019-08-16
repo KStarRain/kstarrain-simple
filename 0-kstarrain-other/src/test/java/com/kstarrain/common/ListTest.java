@@ -74,7 +74,13 @@ public class ListTest {
 
     }
 
+    @Test
+    public void test2(){
 
+        int[] x = new int[10];
+        System.out.println(x[0]);
+
+    }
 
 
 }

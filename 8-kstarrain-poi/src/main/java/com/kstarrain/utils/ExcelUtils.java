@@ -200,35 +200,42 @@ public class ExcelUtils {
         }
 
         List<Method> usefulSetMethods = new ArrayList<>();
+        HashMap<Method, Integer> usefulSetMethodsColumnNumber = new HashMap<>();
         List<?> rowContent = excel.readRow(0);
 
-        for (Object cellValue : rowContent) {
+        for (int i = 0; i < rowContent.size(); i++) {
+            Object cellValue = rowContent.get(i);
             if (StringUtils.isNotBlank(titlePropertyMap.get(cellValue))){
                 String mehtodName = "set" + StringUtils.capitalize(titlePropertyMap.get(cellValue));
                 Method method = clazzMethodMap.get(mehtodName);
                 if (method != null){
-                    usefulSetMethods.add(clazzMethodMap.get(mehtodName));
+                    usefulSetMethods.add(method);
+                    usefulSetMethodsColumnNumber.put(method, i);
                 }else {
                     throw new NoSuchMethodException("Method [" + mehtodName + "] not found in class [" + clazz.getName() + "].");
                 }
             }
         }
 
+        if (CollectionUtils.isEmpty(usefulSetMethods)){
+            return new ArrayList<>();
+        }
+
         List<T> result = new ArrayList<>();
         for (int i = 1; i <= lastRowNum; i++) {
             rowContent = excel.readRow(i);
-            if (CollectionUtils.isEmpty(rowContent) || StringUtils.isBlank(rowContent.get(0) + "")) {
-                continue;
-            }
+            if (CollectionUtils.isEmpty(rowContent)) {continue;}
+
             T bean = clazz.newInstance();
-            for (int j = 0, size = rowContent.size(); j < size; j++) {
-                Object cellValue = rowContent.get(j);
-                Method usefulSetMethod = usefulSetMethods.get(j);
+
+            for (Method usefulSetMethod : usefulSetMethods) {
+                Object cellValue = rowContent.get(usefulSetMethodsColumnNumber.get(usefulSetMethod));
+
+                if (String.class.equals(cellValue.getClass()) && StringUtils.isBlank((String)cellValue)){continue;}
+
                 Class<?> parameterType = usefulSetMethod.getParameterTypes()[0];
                 if (!cellValue.getClass().equals(parameterType)) {
-                    if (MapUtils.isNotEmpty(propertyDateFormatMap)
-                            && String.class.equals(cellValue.getClass())
-                            && Date.class.equals(parameterType)){
+                    if (MapUtils.isNotEmpty(propertyDateFormatMap) && String.class.equals(cellValue.getClass()) && Date.class.equals(parameterType)){
                         String propertyName = StringUtils.uncapitalize(usefulSetMethod.getName().substring(3));
                         DateFormat dateFormat = propertyDateFormatMap.get(propertyName);
                         if (dateFormat != null){
@@ -240,8 +247,9 @@ public class ExcelUtils {
                         cellValue = ConvertUtils.convert(cellValue, parameterType);
                     }
                 }
-                usefulSetMethods.get(j).invoke(bean, cellValue);
+                usefulSetMethod.invoke(bean, cellValue);
             }
+
             result.add(bean);
         }
         return result;

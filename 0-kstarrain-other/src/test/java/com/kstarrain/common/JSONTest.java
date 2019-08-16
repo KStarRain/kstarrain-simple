@@ -17,7 +17,12 @@ public class JSONTest {
     @Test
     public void test1(){
 
-        Student student2 = JSON.parseObject(" ", Student.class);
+        System.out.println(JSON.toJSONString("1234"));
+
+        Student student = new Student();
+        Object o = JSON.toJSON(student);
+
+       /* Student student2 = JSON.parseObject(" ", Student.class);
 
         String s1 = JSON.toJSONString(null);
 
@@ -27,7 +32,7 @@ public class JSONTest {
         System.out.println(s);
 
         Student student = JSON.parseObject(s, Student.class);
-        System.out.println(student);
+        System.out.println(student);*/
     }
 
     @Test
@@ -55,7 +60,7 @@ public class JSONTest {
     @Test
     public void test3(){
 
-        String supplierInfo = "{\"supplier\": \"shangtang\"}";
+        String supplierInfo = "{\"supplier\": \"1345\"}";
 
         JSONObject jsonObject = JSON.parseObject(supplierInfo);
         System.out.println(jsonObject);

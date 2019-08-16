@@ -88,7 +88,7 @@ public class Excel {
 		if (row == null) {
 			return new ArrayList<>();
 		}
-		return readRow(rowNum, (int)row.getFirstCellNum(), (int)row.getLastCellNum());
+		return readRow(rowNum, (int)row.getLastCellNum());
 	}
 
 	public List<?> readRow(Integer rowNum, Integer colNum) {

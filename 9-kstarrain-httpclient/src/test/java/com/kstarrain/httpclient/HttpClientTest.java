@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -253,8 +254,8 @@ public class HttpClientTest {
 
             // MultipartEntityBuilder会自动声明Content-Type为multipart/form-data
             httpPost.setEntity(MultipartEntityBuilder.create()
-                                .addPart("userName",new StringBody("董宇",Charset.forName("UTF-8")))
-                                .addPart("key",new StringBody("1234qwer",Charset.forName("UTF-8")))
+                                .addPart("userName",new StringBody("董宇", StandardCharsets.UTF_8))
+                                .addPart("key",new StringBody("1234qwer", StandardCharsets.UTF_8))
                                 .addPart("file",new FileBody(new File(readFilePath)))
                                 .build());
 

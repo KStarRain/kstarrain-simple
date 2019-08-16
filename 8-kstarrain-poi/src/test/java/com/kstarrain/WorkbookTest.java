@@ -130,6 +130,7 @@ public class WorkbookTest {
             Map<String, String> titlePropertyMap = new LinkedHashMap<>();
             titlePropertyMap.put("主键","id");
             titlePropertyMap.put("姓名","name");
+            titlePropertyMap.put("手机","moblie");
             titlePropertyMap.put("生日","birthday");
             titlePropertyMap.put("余额","money");
             titlePropertyMap.put("创建时间","createDate");
@@ -173,6 +174,7 @@ public class WorkbookTest {
             Map<String, String> titlePropertyMap = new LinkedHashMap<>();
             titlePropertyMap.put("主键","id");
             titlePropertyMap.put("姓名","name");
+            titlePropertyMap.put("手机","moblie");
             titlePropertyMap.put("生日","birthday");
             titlePropertyMap.put("余额","money");
             titlePropertyMap.put("创建时间","createDate");

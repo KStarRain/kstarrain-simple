@@ -18,6 +18,8 @@ public class Student {
 
     String name;
 
+    String moblie;
+
     Date birthday;
 
     BigDecimal money;

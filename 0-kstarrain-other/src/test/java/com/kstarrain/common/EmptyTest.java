@@ -1,11 +1,10 @@
 package com.kstarrain.common;
 
 
-import com.kstarrain.pojo.Student;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+
 import java.util.*;
 
 /**
@@ -20,12 +19,15 @@ public class EmptyTest {
 
     @Test
     public void testString(){
-        String str = null;
-//        str = "";
-//        str = " ";
-//        System.out.println(str.isEmpty());
-        System.out.println("-------------------------");
-        System.out.println(StringUtils.isBlank(str));
+
+        String a = "#" + null;
+        System.out.println(a);
+//        String str = null;
+////        str = "";
+////        str = " ";
+////        System.out.println(str.isEmpty());
+//        System.out.println("-------------------------");
+//        System.out.println(StringUtils.isBlank(str));
     }
 
     @Test
@@ -41,13 +43,14 @@ public class EmptyTest {
 //        System.out.println(CollectionUtils.isEmpty(list));
 
 
+        System.out.println(CollectionUtils.isEmpty(Collections.emptyList()));
 
-        List<Student> list2 = null;
+       /* List<Student> list2 = null;
         list2 = new ArrayList();
         list2.add(null);
         for (Student s2 : list2) {
             System.out.println(s2);
-        }
+        }*/
 
     }
 

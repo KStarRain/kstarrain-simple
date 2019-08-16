@@ -31,10 +31,7 @@ public class CollectionTest {
                         new Predicate<Hotel>() {
                             @Override
                             public boolean test(Hotel hotel) {
-                                if (hotel.getEnable()){
-                                    return true;
-                                }
-                                return false;
+                                return hotel.getEnable();
                             }
                         }
                 )
@@ -53,5 +50,14 @@ public class CollectionTest {
         hotels.forEach(System.out :: println);
 
 //                .sorted(Comparator.comparing(SubstituteLabel::getPriority)).collect(Collectors.toList());
+    }
+
+
+    @Test
+    public void test2() {
+
+        List<String> totalList = new ArrayList<>();
+        totalList.addAll(null);
+        System.out.println();
     }
 }

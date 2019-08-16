@@ -31,11 +31,20 @@ public class RegexTest {
     @Test
     public void test2() {
 
-        String o = "^(?!(CQXD|CIMS|AVIC01|XITC01|ZRT01|YXITC01)).*$";
-        o = "BoHai|LHFK02|LHFK03|LHFK04|LHFK05|LHFK06|LHFK07|LHFK08|LHFK09|SMABS|Syndicated|YLDZ";
+        String regex = "^(?!(CQXD|CIMS|AVIC01|XITC01|ZRT01|YXITC01)).*$";
+        regex = "BoHai|LHFK02|LHFK03|LHFK04|LHFK05|LHFK06|LHFK07|LHFK08|LHFK09|SMABS|Syndicated|YLDZ";
 
-        System.out.println("BOHAI".matches(o));
+        System.out.println("BOHAI".matches(regex));
 
     }
 
+
+    @Test
+    public void test3() {
+
+        String regex = "1[3-9]\\d{9}$";
+
+        System.out.println("13836843570".matches(regex));
+
+    }
 }

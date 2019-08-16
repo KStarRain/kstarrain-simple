@@ -50,6 +50,7 @@ public class HttpClientController extends HttpServlet {
         }
 
         System.out.println("Content-Type : " + request.getHeader("Content-Type"));
+        System.out.println("Authorization : " + request.getHeader("Authorization"));
         System.out.println("userName : " + request.getParameter("userName"));
         System.out.println("key : " + request.getParameter("key"));
 
@@ -57,7 +58,8 @@ public class HttpClientController extends HttpServlet {
         resultDTO.setMessage("成功");
 
         //响应
-        response.setContentType("application/json;charset=UTF-8");
+//        response.setContentType("text/plain;charset=UTF-8");
+//        response.setContentType("application/json;charset=UTF-8");
         response.getWriter().append(JSON.toJSONString(resultDTO));
 
     }
@@ -71,8 +73,12 @@ public class HttpClientController extends HttpServlet {
 
         System.out.println("Authorization : " + request.getHeader("Authorization"));
 
-        //需要decode去解析汉字
-        System.out.println("store : " + new String(Base64.getDecoder().decode(request.getHeader("store")), "utf-8"));
+        String store = request.getHeader("store");
+        if (StringUtils.isNotBlank(store)){
+            //需要decode去解析汉字
+            System.out.println("store : " + new String(Base64.getDecoder().decode(store), "utf-8"));
+        }
+
 
         //通过getHeader获取Cookie时，汉字编码会有问题
         System.out.println("Cookie : " + request.getHeader("Cookie"));
@@ -90,24 +96,29 @@ public class HttpClientController extends HttpServlet {
         String contentType = request.getHeader("Content-Type");
         System.out.println("Content-Type : " + contentType);
 
-        //接受 application/x-www-form-urlencoded 只有此时，request.getParameter才能获取到值
-        if ("application/x-www-form-urlencoded".equals(contentType)){
+        System.out.println("userName : " + request.getParameter("userName"));
+        System.out.println("key : " + request.getParameter("key"));
 
-            System.out.println("userName : " + request.getParameter("userName"));
-            System.out.println("key : " + request.getParameter("key"));
 
-            this.returnJsonResponse(response);
-        }
         //接受 application/json;charset=UTF-8 或 application/json
-        else if (contentType != null && contentType.startsWith("application/json")){
+        if (contentType.startsWith("application/json")){
 
             this.parseJsonData(request,response);
             this.returnJsonResponse(response);
         }
         //接受 multipart/form-data; 此时通过request.getParameter获取不到值 通过commons-io和commons-fileupload进行取值
-        else if (contentType != null && contentType.startsWith("multipart/form-data")){
+        else if (contentType.startsWith("multipart/form-data")){
 
             this.parseMultipartData(request,response);
+        }
+        //接受 application/x-www-form-urlencoded 只有此时，request.getParameter才能获取到值
+//        if ("application/x-www-form-urlencoded".equals(contentType)){
+        else {
+
+            System.out.println("userName : " + request.getParameter("userName"));
+            System.out.println("key : " + request.getParameter("key"));
+
+            this.returnJsonResponse(response);
         }
 
     }
