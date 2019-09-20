@@ -29,7 +29,7 @@
     <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p  --- [%15.15t] %-40.40logger{39} : %m    [user:%X{user}]  %n  "   />
 
     <!--打印到文件的日志格式 -->
-    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p  --- [%15.15t] %-40.40logger{39} : %m%n" />
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p  --- [%15.15t] %X{user} %-40.40logger{39} : %m%n" />
 
 
 

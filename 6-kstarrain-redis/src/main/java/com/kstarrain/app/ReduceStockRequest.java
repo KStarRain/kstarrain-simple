@@ -1,9 +1,9 @@
-package com.kstarrain.request;
+package com.kstarrain.app;
 
 import com.alibaba.fastjson.JSON;
 import com.kstarrain.controller.GoodsController;
 import com.kstarrain.pojo.Goods;
-import com.kstarrain.request.runnable.ReduceStockRunnable;
+import com.kstarrain.runnable.ReduceStockRunnable;
 import com.kstarrain.utils.JedisPoolUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,7 +48,7 @@ public class ReduceStockRequest {
         for (int i = 1; i <= 10000; i++) {
             executor.execute(new ReduceStockRunnable(goodsController,"user" + i, goodsKey, quantity));
         }
-        executor.shutdown();
+//        executor.shutdown();
 
     }
 

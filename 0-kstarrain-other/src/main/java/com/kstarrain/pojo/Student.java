@@ -29,6 +29,8 @@ public class Student {
 
     String aliveFlag;
 
+    Integer age;
+
 
 //    public String getName() {
 //        return "hahaha";

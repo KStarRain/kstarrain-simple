@@ -2,16 +2,15 @@ package com.kstarrain;
 
 import com.alibaba.fastjson.JSON;
 import com.kstarrain.pojo.Student;
-import com.kstarrain.utils.DistributedLockUtils;
 import com.kstarrain.utils.JedisPoolUtils;
-import com.kstarrain.utils.TestDataUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
-import redis.clients.jedis.*;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Transaction;
+import redis.clients.jedis.Tuple;
 
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -60,6 +59,7 @@ public class RedisTest {
 
             //设置key-value
             jedis.set(KEY, "貂蝉");
+
 
 //            //SETNX 是『SET if Not eXists』(如果不存在，则 SET)
 //            Long count = jedis.setnx(KEY, "吕布");
@@ -399,6 +399,36 @@ public class RedisTest {
 
     }
 
+
+    /** 测试string */
+    @Test
+    public void testListener() {
+        String KEY_PREFIX = "LISTENER_";
+
+        Jedis jedis = null;
+        try {
+            jedis = JedisPoolUtils.getJedis();
+
+            jedis.publish("test_channel","推送消息");
+
+            String KEY_01 = KEY_PREFIX + "01";
+            jedis.set(KEY_01, "貂蝉");
+            jedis.expire(KEY_01,5);
+
+            String KEY_02 = KEY_PREFIX + "02";
+            jedis.set(KEY_02, "吕布");
+            jedis.expire(KEY_02,5);
+
+            String KEY_other = "TEST_006312";
+            jedis.set(KEY_other, "打击");
+            jedis.expire(KEY_other,5);
+
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        } finally {
+            JedisPoolUtils.closeJedis(jedis);
+        }
+    }
 
 
 

@@ -1,4 +1,4 @@
-package com.kstarrain.request;
+package com.kstarrain.app;
 
 import lombok.Data;
 

@@ -17,7 +17,7 @@ import java.util.*;
 
 /**
  * @author: DongYu
- * @create: 2019-03-07 19:27
+ * @create: 2019-09-06 14:27
  * @description: Excel 工具类  请了解清除大致用法之后再用，不然有坑
  *               HSSFWorkbook 操作 .xls 结尾的文件(Excel 2003之前的版本) 导出条数上限是65535行、256列
  *               XSSFWorkbook 操作 .xlsx结尾的文件(Excel 2007之后的版本) 导出条数上限是1048576行,16384列
@@ -144,7 +144,7 @@ public class ExcelUtils {
         }
 
         Excel result = create(excelType).createSheet();
-        result.writeRow(0, rowContent);
+        result.writeRow(0, rowContent, true);
 
         for (int i = 0, len = beans.size(); i < len; i++) {
             rowContent.clear();
@@ -160,7 +160,7 @@ public class ExcelUtils {
                 }
                 rowContent.add(invoke);
             }
-            result.writeRow(i + 1, rowContent);
+            result.writeRow(i + 1, rowContent,false);
         }
 
         return result;

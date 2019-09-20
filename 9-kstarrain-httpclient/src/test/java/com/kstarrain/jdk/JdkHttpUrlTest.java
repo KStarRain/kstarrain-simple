@@ -1,12 +1,11 @@
 package com.kstarrain.jdk;
 
 import com.alibaba.fastjson.JSON;
-import com.kstarrain.request.RequestParam;
+import com.kstarrain.app.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-import sun.misc.BASE64Encoder;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
@@ -43,7 +42,7 @@ public class JdkHttpUrlTest {
             params.put("key", "1234qwer");
 
             //拼接参数
-            StringBuilder urlbuf = new StringBuilder(requestUrl);
+            StringBuilder urlbuf = new StringBuilder("http://localhost:8080/mvc/http/get");
             if (MapUtils.isNotEmpty(params)){
                 int num = 0;
                 for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -79,25 +78,26 @@ public class JdkHttpUrlTest {
             // 发送请求
             conn.connect();
 
+           log.info("response code : {}",conn.getResponseCode());
+
+
             // 通过connection连接，获取输入流
             if (conn.getResponseCode() == 200) {
-
                 //读取连接中的返回数据, 并对输入流对象进行包装:charset根据工作项目组的要求来设置
                 reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-                // 存放数据
-                StringBuffer sbf = new StringBuffer();
-                String temp;
-                while ((temp = reader.readLine()) != null) {
-                    sbf.append(temp);
-                }
-                System.out.println(sbf.toString());
-
-            }else {
-                System.out.println("错误码-" + conn.getResponseCode());
+            } else {
+                reader = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"));
             }
-        } catch (MalformedURLException e) {
-            log.error(e.getMessage(),e);
-        } catch (IOException e) {
+
+            // 存放数据
+            StringBuffer sbf = new StringBuffer();
+            String temp;
+            while ((temp = reader.readLine()) != null) {
+                sbf.append(temp);
+            }
+            System.out.println(sbf.toString());
+
+        } catch (Exception e) {
             log.error(e.getMessage(),e);
         } finally {
             if (reader != null) {
@@ -133,8 +133,8 @@ public class JdkHttpUrlTest {
             conn = (HttpURLConnection) url.openConnection();
             // 设置连接请求方式
             conn.setRequestMethod("POST");
-            // 设置连接主机服务器超时时间：15000毫秒
-            conn.setConnectTimeout(15000);
+            // 设置连接主机服务器超时时间：3000毫秒
+            conn.setConnectTimeout(3000);
             // 设置读取主机服务器返回数据超时时间：60000毫秒
             conn.setReadTimeout(60000);
 

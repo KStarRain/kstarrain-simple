@@ -1,6 +1,7 @@
 package com.kstarrain.common;
 
 
+import com.alibaba.fastjson.JSON;
 import com.kstarrain.utils.ListUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
@@ -79,6 +80,20 @@ public class ListTest {
 
         int[] x = new int[10];
         System.out.println(x[0]);
+
+    }
+
+    @Test
+    public void test3(){
+
+        List<String> result = new ArrayList<>();
+        result.addAll(new ArrayList<>());
+
+        List<String> result2 = new ArrayList<>();
+        result2.add("1234");
+        result.addAll(result2);
+
+        System.out.println(JSON.toJSONString(result));
 
     }
 

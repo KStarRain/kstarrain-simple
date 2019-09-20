@@ -1,17 +1,11 @@
-package com.kstarrain.request;
+package com.kstarrain.app;
 
-import com.alibaba.fastjson.JSON;
 import com.kstarrain.controller.GoodsController;
-import com.kstarrain.pojo.Goods;
-import com.kstarrain.request.runnable.CacheBreakdownRunnable;
-import com.kstarrain.request.runnable.ReduceStockRunnable;
+import com.kstarrain.runnable.CacheBreakdownRunnable;
 import com.kstarrain.utils.JedisPoolUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
-import java.security.Key;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,7 +33,7 @@ public class CacheBreakdownRequest {
         for (int i = 1; i <= 10000; i++) {
             executor.execute(new CacheBreakdownRunnable(goodsController,"user" + i,key));
         }
-        executor.shutdown();
+//        executor.shutdown();
 
     }
 

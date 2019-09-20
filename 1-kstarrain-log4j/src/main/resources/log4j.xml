@@ -31,7 +31,7 @@
         <!-- 设置日志输出的样式 -->
         <layout class="org.apache.log4j.PatternLayout">
             <!-- 设置日志输出的格式 -->
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p  --- [%15.15t] %-40.40c(%F:%L) : %m%n"/>
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p  --- [%15.15t] %X{user} %-40.40c(%F:%L) : %m%n"/>
         </layout>
         <!--过滤器设置输出的级别-->
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
@@ -114,7 +114,7 @@
             <param name="MaxFileSize" value="1073741824" />
         </triggeringPolicy>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p  --- [%15.15t] %-40.40c(%F:%L) : %m%n" />
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t] (%c.%M:%L:) - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="INFO"/>

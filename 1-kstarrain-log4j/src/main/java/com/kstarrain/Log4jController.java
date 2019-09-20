@@ -14,6 +14,7 @@ public class Log4jController {
 
     public static void main(String[] args) {
 
+//        MDC.put("user", "153");
         Logger log = LoggerFactory.getLogger(Log4jController.class);
 
         for (int i = 1; i <= 108; i++) {

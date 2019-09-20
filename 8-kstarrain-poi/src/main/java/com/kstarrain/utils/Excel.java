@@ -1,5 +1,8 @@
 package com.kstarrain.utils;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.IOException;
@@ -9,9 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Excel 工具类（未优化版）
- * 请了解清除大致用法之后再用，不然有坑
- * @author Kahle
+ * @author: DongYu
+ * @create: 2019-09-06 14:27
  */
 public class Excel {
 
@@ -107,14 +109,53 @@ public class Excel {
 		return rowContent;
 	}
 
-	public Excel writeRow(Integer rowNum, List<?> rowContent) {
-		int len = rowContent.size();
-		Row row = currentSheet().createRow(rowNum);
-		for (int i = 0; i < len; ++i) {
-			setCellValue(row.createCell(i), rowContent.get(i));
+	public Excel writeRow(Integer rowIndex, List<?> rowContent, boolean isTitle) {
+		Row row = currentSheet().createRow(rowIndex);
+
+		CellStyle cellStyle = null;
+		if (isTitle){
+			cellStyle = this.createTitleCellStyle();
+		}
+		for (int columnIndex = 0; columnIndex < rowContent.size(); ++columnIndex) {
+			setCellValue(columnIndex, row.createCell(columnIndex), cellStyle, rowContent.get(columnIndex));
 		}
 		return this;
 	}
+
+
+	private CellStyle createTitleCellStyle() {
+
+		CellStyle style = workBook.createCellStyle();
+
+		style.setAlignment(HSSFCellStyle.ALIGN_CENTER);              // 设置单元格水平方向对齐方式：居中
+		style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);   // 设置单元格垂直方向对齐方式：居中
+
+		style.setFillForegroundColor(HSSFColor.SKY_BLUE.index);      // 设置单元格填充背景颜色：天蓝色
+		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);        // 设置单元格填充样式：
+
+		style.setBorderTop(HSSFCellStyle.BORDER_THIN);               // 设置单元格顶部边框线条：细线
+		style.setTopBorderColor(IndexedColors.RED.getIndex());       // 设置单元格顶部边框颜色：红
+
+		style.setBorderBottom(HSSFCellStyle.BORDER_THIN);            // 设置单元格底部边框线条：细线
+		style.setBottomBorderColor(IndexedColors.RED.getIndex());    // 设置单元格底部边框颜色：红
+
+		style.setBorderLeft(HSSFCellStyle.BORDER_THIN);              // 设置单元格左边边框线条：细线
+		style.setLeftBorderColor(IndexedColors.RED.getIndex());      // 设置单元格左边边框颜色：红
+
+		style.setBorderRight(HSSFCellStyle.BORDER_THIN);             // 设置单元格右边边框线条：细线
+		style.setRightBorderColor(IndexedColors.RED.getIndex());     // 设置单元格右边边框颜色：红
+
+
+		// 生成一个字体
+		Font font = workBook.createFont();
+		font.setColor(HSSFColor.VIOLET.index);                       // 设置字体颜色
+		font.setFontHeightInPoints((short) 12);                      // 设置字体大小
+		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);                // 设置字体粗细
+		// 把字体应用到当前的样式
+		style.setFont(font);
+		return style;
+	}
+
 
 	public Excel write(OutputStream out) throws IOException {
 		workBook.write(out);
@@ -125,8 +166,6 @@ public class Excel {
 	private Object getCellValue(Cell cell) {
 		Object cellValue = "";
 		if (cell != null) {
-			//TODO
-//			System.out.println("====:"+cell.getRowIndex()+","+cell.getStringCellValue()+","+cell.getRow());
 			
 			switch (cell.getCellType()) {
 				case Cell.CELL_TYPE_NUMERIC:
@@ -146,22 +185,44 @@ public class Excel {
 		return cellValue;
 	}
 
-	private void setCellValue(Cell cell, Object value) {
+	private void setCellValue(int columnIndex, Cell cell, CellStyle cellStyle, Object value) {
+
+		if (cellStyle != null){
+			cell.setCellStyle(cellStyle);
+		}
+
+		int columnWidth = (sheet.getColumnWidth(columnIndex) - 184) / 256;
+
 		if (value == null) {
 			cell.setCellValue("");
 		} else if (value instanceof String) {
 			cell.setCellValue((String)value);
+			this.autoSizeColumn(columnIndex, columnWidth, cell.getStringCellValue().getBytes().length);
 		} else if (value instanceof RichTextString) {
 			cell.setCellValue((RichTextString)value);
 		} else if (value instanceof Boolean) {
 			cell.setCellValue((Boolean)value);
+			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getBooleanCellValue()).getBytes().length);
 		} else if (value instanceof Date) {
 			cell.setCellValue((Date) value);
+			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getDateCellValue().getTime()).getBytes().length);
 		} else if (value instanceof Number) {
 			cell.setCellValue(((Number)value).doubleValue());
+			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getNumericCellValue()).getBytes().length);
 		}else {
 			cell.setCellValue(value.toString());
+			this.autoSizeColumn(columnIndex, columnWidth, cell.getStringCellValue().getBytes().length);
 		}
+
+
+	}
+
+	// 列宽中文自适应
+	private void autoSizeColumn(int columnIndex, int columnWidth, int length) {
+		if (columnWidth < length) {
+			columnWidth = length;
+		}
+		sheet.setColumnWidth(columnIndex, columnWidth * 256 + 184);
 	}
 
 }

@@ -5,11 +5,11 @@ package com.kstarrain.runnable;
  * @create: 2019-03-04 20:48
  * @description:
  */
-public class MyTaskTest {
+public class MyRunnableTest {
 
     public static void main(String[] args) throws InterruptedException {
-        MyTask myTask = new MyTask();
-        Thread thread = new Thread(myTask,"吕布");
+
+        Thread thread = new Thread(new MyRunnable(),"吕布");
         Thread.sleep(1000l);
         thread.start();
     }

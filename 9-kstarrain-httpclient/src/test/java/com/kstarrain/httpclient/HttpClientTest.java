@@ -1,7 +1,7 @@
 package com.kstarrain.httpclient;
 
 import com.alibaba.fastjson.JSON;
-import com.kstarrain.request.RequestParam;
+import com.kstarrain.app.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.http.HttpStatus;
@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 

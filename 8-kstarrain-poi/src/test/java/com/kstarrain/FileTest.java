@@ -16,9 +16,8 @@ public class FileTest {
 
     /** OutputStream：它是抽象类，不能创建对象，这里我们需要使用OutputStream类的子类FileOutputStream的对象把数据写到文件中 */
     @Test
-    public void outputStream(){
+    public void writeFile(){
 
-//        String filePath = "E:\\test\\file";
         String filePath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + "outputFile.txt";
 
         //1:使用File类创建一个要操作的文件路径
@@ -60,9 +59,9 @@ public class FileTest {
 
     /** InputStream：它是抽象类，不能创建对象，这里我们需要使用InputStream类的子类FileInputStream的对象把文件读到内存中 */
     @Test
-    public void inputStream(){
+    public void readFile(){
 
-//        String filePath = "E:\\test\\file";
+
         String filePath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + "outputFile.txt";
 
         InputStream input = null;
@@ -103,7 +102,7 @@ public class FileTest {
 
 
     @Test
-    public void copy(){
+    public void copyFile(){
 
         String fromPath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + "outputFile.txt";
         String toPath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + "outputFile_copy.txt";

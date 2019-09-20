@@ -1,7 +1,7 @@
 package com.kstarrain.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.kstarrain.request.RequestParam;
+import com.kstarrain.app.RequestParam;
 import com.kstarrain.response.ResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
@@ -9,7 +9,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import sun.misc.BASE64Encoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -148,14 +146,12 @@ public class HttpClientController extends HttpServlet {
                         contentType = "image/jpeg";
                     }else if (fileName.endsWith(".gif")) {
                         contentType = "image/gif";
-                    }else if (fileName.endsWith(".ico")) {
-                        contentType = "image/image/x-icon";
                     }
 
                     response.setContentType(contentType);
 
                     /**将传入的文件复制输出到本地上*/
-                    copyFile(fileItem);
+                    copyFileToLocal(fileItem);
 
                     /**将传入的文件以流的形式输出到response中*/
                     writeFileToResponse(fileItem, response);
@@ -210,7 +206,7 @@ public class HttpClientController extends HttpServlet {
 
 
 
-    private void copyFile(FileItem fileItem) {
+    private void copyFileToLocal(FileItem fileItem) {
 
         String toPath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + fileItem.getName();
 

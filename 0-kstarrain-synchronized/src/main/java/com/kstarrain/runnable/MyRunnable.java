@@ -5,7 +5,7 @@ package com.kstarrain.runnable;
  * @create: 2019-03-04 20:46
  * @description:
  */
-public class MyTask implements Runnable {
+public class MyRunnable implements Runnable {
 
     @Override
     public void run() {

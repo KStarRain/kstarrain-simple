@@ -1,8 +1,8 @@
-package com.kstarrain.request;
+package com.kstarrain.app;
 
 
 import com.kstarrain.controller.GoodsController;
-import com.kstarrain.request.runnable.GoodsControllerRunnable;
+import com.kstarrain.runnable.GoodsControllerRunnable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

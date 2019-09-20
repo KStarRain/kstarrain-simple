@@ -27,6 +27,7 @@ public class TestDataUtils {
         student1.setCreateDate(new Date());
         student1.setUpdateDate(new Date());
         student1.setAliveFlag(1);
+        student1.setIsAlive(true);
         return student1;
     }
 
@@ -44,6 +45,7 @@ public class TestDataUtils {
         student2.setCreateDate(new Date());
         student2.setUpdateDate(new Date());
         student2.setAliveFlag(1);
+        student2.setIsAlive(false);
         return student2;
     }
 

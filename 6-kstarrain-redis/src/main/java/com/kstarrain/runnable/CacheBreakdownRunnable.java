@@ -1,4 +1,4 @@
-package com.kstarrain.request.runnable;
+package com.kstarrain.runnable;
 
 import com.kstarrain.controller.GoodsController;
 import com.kstarrain.pojo.Goods;

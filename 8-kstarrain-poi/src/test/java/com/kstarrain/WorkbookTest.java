@@ -17,11 +17,9 @@ import org.junit.Test;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: DongYu
@@ -125,7 +123,29 @@ public class WorkbookTest {
         try {
             output = new FileOutputStream(path);
 
-            List<Student> data = TestDataUtils.getStudentList();
+            List<Student> data = new ArrayList<>();
+
+            for (int i = 1; i <= 100; i++) {
+                data.add(TestDataUtils.createStudent1());
+
+            }
+
+            Student student1 = new Student();
+            student1.setId(UUID.randomUUID().toString().replace("-", ""));
+
+            try {
+                student1.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1991-09-07 23:24:51"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            student1.setCreateDate(new Date());
+            student1.setUpdateDate(new Date());
+            data.add(student1);
+
+//            List<Student> data = TestDataUtils.getStudentList();
+
+            long start = System.currentTimeMillis();
 
             Map<String, String> titlePropertyMap = new LinkedHashMap<>();
             titlePropertyMap.put("主键","id");
@@ -145,6 +165,10 @@ public class WorkbookTest {
 //            ExcelUtils.createByBeans(Excel.Type.XLS, data , titlePropertyMap, propertyDateFormatMap).write(output);
 //            ExcelUtils.createByBeans(Excel.Type.XLSX, data , titlePropertyMap, propertyDateFormatMap).write(output);
             ExcelUtils.createByBeans(Excel.Type.LARGE_XLSX, data , titlePropertyMap, propertyDateFormatMap).write(output);
+
+            long end = System.currentTimeMillis();
+
+            System.out.println("导出耗时 " + (end - start)/1000 + "秒" );
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -171,6 +195,8 @@ public class WorkbookTest {
         try {
             input = new FileInputStream(path);
 
+            long start = System.currentTimeMillis();
+
             Map<String, String> titlePropertyMap = new LinkedHashMap<>();
             titlePropertyMap.put("主键","id");
             titlePropertyMap.put("姓名","name");
@@ -190,7 +216,11 @@ public class WorkbookTest {
             Excel excel = ExcelUtils.create(path, input).selectSheet(0);
             List<Student> students = ExcelUtils.readToBeans(excel, Student.class, titlePropertyMap, propertyDateFormatMap);
 
-            System.out.println(students);
+            long end = System.currentTimeMillis();
+
+            System.out.println("导入耗时 " + (end - start)/1000 + "秒" );
+
+            System.out.println();
 
         } catch (Exception e) {
             e.printStackTrace();

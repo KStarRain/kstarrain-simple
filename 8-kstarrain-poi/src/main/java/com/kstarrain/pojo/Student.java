@@ -29,4 +29,6 @@ public class Student {
     Date updateDate;
 
     Integer aliveFlag;
+
+    Boolean isAlive;
 }
