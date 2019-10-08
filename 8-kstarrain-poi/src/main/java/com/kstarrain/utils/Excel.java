@@ -164,25 +164,24 @@ public class Excel {
 	}
 
 	private Object getCellValue(Cell cell) {
-		Object cellValue = "";
-		if (cell != null) {
-			
-			switch (cell.getCellType()) {
-				case Cell.CELL_TYPE_NUMERIC:
-				case Cell.CELL_TYPE_FORMULA: {
-					if (DateUtil.isCellDateFormatted(cell)) {
-						cellValue = cell.getDateCellValue();
-					} else {
-						cellValue = cell.getNumericCellValue();
-					} break;
+
+		if (cell == null) {return "";}
+
+		switch (cell.getCellType()) {
+			case Cell.CELL_TYPE_NUMERIC:
+				return cell.getNumericCellValue();
+			case Cell.CELL_TYPE_FORMULA: {
+				if (DateUtil.isCellDateFormatted(cell)) {
+					return cell.getDateCellValue();
+				} else {
+					return cell.getNumericCellValue();
 				}
-				case Cell.CELL_TYPE_BOOLEAN:
-					cellValue = cell.getBooleanCellValue(); break;
-				default :
-					cellValue = cell.getStringCellValue();
 			}
+			case Cell.CELL_TYPE_BOOLEAN:
+				return cell.getBooleanCellValue();
+			default :
+				return cell.getStringCellValue();
 		}
-		return cellValue;
 	}
 
 	private void setCellValue(int columnIndex, Cell cell, CellStyle cellStyle, Object value) {
@@ -204,7 +203,12 @@ public class Excel {
 			cell.setCellValue((Boolean)value);
 			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getBooleanCellValue()).getBytes().length);
 		} else if (value instanceof Date) {
-			cell.setCellValue((Date) value);
+
+            CellStyle dateCellStyle = workBook.createCellStyle();
+            dateCellStyle.setDataFormat(workBook.createDataFormat().getFormat("yyyy/mm/dd HH:mm:ss"));
+            cell.setCellStyle(dateCellStyle);
+
+            cell.setCellValue((Date) value);
 			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getDateCellValue().getTime()).getBytes().length);
 		} else if (value instanceof Number) {
 			cell.setCellValue(((Number)value).doubleValue());

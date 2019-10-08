@@ -123,27 +123,8 @@ public class WorkbookTest {
         try {
             output = new FileOutputStream(path);
 
-            List<Student> data = new ArrayList<>();
 
-            for (int i = 1; i <= 100; i++) {
-                data.add(TestDataUtils.createStudent1());
-
-            }
-
-            Student student1 = new Student();
-            student1.setId(UUID.randomUUID().toString().replace("-", ""));
-
-            try {
-                student1.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("1991-09-07 23:24:51"));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            student1.setCreateDate(new Date());
-            student1.setUpdateDate(new Date());
-            data.add(student1);
-
-//            List<Student> data = TestDataUtils.getStudentList();
+            List<Student> data = TestDataUtils.getStudentList();
 
             long start = System.currentTimeMillis();
 
@@ -156,11 +137,13 @@ public class WorkbookTest {
             titlePropertyMap.put("创建时间","createDate");
             titlePropertyMap.put("更新时间","updateDate");
             titlePropertyMap.put("删除标记","aliveFlag");
+            titlePropertyMap.put("删除标记2","isAlive");
+
 
             Map<String, DateFormat> propertyDateFormatMap = new LinkedHashMap<>();
-            propertyDateFormatMap.put("birthday",new SimpleDateFormat("yyyy-MM-dd"));
+/*            propertyDateFormatMap.put("birthday",new SimpleDateFormat("yyyy-MM-dd"));
             propertyDateFormatMap.put("createDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-            propertyDateFormatMap.put("updateDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+            propertyDateFormatMap.put("updateDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));*/
 
 //            ExcelUtils.createByBeans(Excel.Type.XLS, data , titlePropertyMap, propertyDateFormatMap).write(output);
 //            ExcelUtils.createByBeans(Excel.Type.XLSX, data , titlePropertyMap, propertyDateFormatMap).write(output);
@@ -206,6 +189,7 @@ public class WorkbookTest {
             titlePropertyMap.put("创建时间","createDate");
             titlePropertyMap.put("更新时间","updateDate");
             titlePropertyMap.put("删除标记","aliveFlag");
+            titlePropertyMap.put("删除标记2","isAlive");
 
             Map<String, DateFormat> propertyDateFormatMap = new LinkedHashMap<>();
             propertyDateFormatMap.put("birthday",new SimpleDateFormat("yyyy-MM-dd"));
