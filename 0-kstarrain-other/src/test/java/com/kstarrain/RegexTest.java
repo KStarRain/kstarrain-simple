@@ -47,4 +47,19 @@ public class RegexTest {
         System.out.println("13836843570".matches(regex));
 
     }
+
+
+    @Test
+    public void test4() {
+
+        Object a = null;
+
+        if(a instanceof String){
+            System.out.println(111);
+        }
+        String regex = "BoHai|[Z][R][T]\\d*$|[L][H][F][K]\\d*$";
+
+        System.out.println("ZRT01".matches(regex));
+
+    }
 }

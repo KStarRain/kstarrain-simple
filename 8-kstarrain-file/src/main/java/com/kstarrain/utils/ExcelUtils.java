@@ -2,8 +2,8 @@ package com.kstarrain.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -136,7 +136,7 @@ public class ExcelUtils {
             String mehtodName = "get" + StringUtils.capitalize(titlePropertyEntry.getValue());
             Method method = clazzMethodMap.get(mehtodName);
             if (method != null){
-                usefulGetMethods.add(clazzMethodMap.get(mehtodName));
+                usefulGetMethods.add(method);
                 rowContent.add(titlePropertyEntry.getKey());
             }else {
                 throw new NoSuchMethodException("Method [" + mehtodName + "] not found in class [" + clazz.getName() + "].");

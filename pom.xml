@@ -23,7 +23,7 @@
         <module>6-kstarrain-redis</module>
         <module>7-kstarrain-job-jdk</module>
         <module>7-kstarrain-job-quartz</module>
-        <module>8-kstarrain-poi</module>
+        <module>8-kstarrain-file</module>
         <module>9-kstarrain-httpclient</module>
     </modules>
 

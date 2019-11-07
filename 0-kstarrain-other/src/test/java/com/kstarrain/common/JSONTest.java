@@ -2,12 +2,14 @@ package com.kstarrain.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.AfterFilter;
+import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import com.kstarrain.pojo.Student;
 import com.kstarrain.pojo.UserCrawlInfo;
 import com.kstarrain.utils.TestDataUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -86,6 +88,19 @@ public class JSONTest {
         UserCrawlInfo.AddressBook addressBook = addressBooks.get(0);
         System.out.println(addressBook.getName());
         System.out.println(addressBook.decodeName());
+
+
+    }
+
+
+    @Test
+    public void test4() {
+
+        ArrayList<Advertisement> adList = new ArrayList<>();
+
+        SimplePropertyPreFilter filter = new SimplePropertyPreFilter(Advertisement.class, "url", "action");
+
+        System.out.println(JSON.toJSONString(null, filter));
 
 
     }

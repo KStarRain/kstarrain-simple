@@ -1,7 +1,7 @@
 package com.kstarrain.test;
 
-import com.kstarrain.job.TimeerTaskJob1;
-import com.kstarrain.job.TimeerTaskJob2;
+import com.kstarrain.job.TimerTaskJob1;
+import com.kstarrain.job.TimerTaskJob2;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Timer;
@@ -22,8 +22,8 @@ public class TimerJobTest {
     public static void main(String[] args) {
         log.info("...........服务器启动...........");
 
-        TimeerTaskJob1 task1 = new TimeerTaskJob1();
-        TimeerTaskJob2 task2 = new TimeerTaskJob2();
+        TimerTaskJob1 task1 = new TimerTaskJob1();
+        TimerTaskJob2 task2 = new TimerTaskJob2();
 
 
         /**

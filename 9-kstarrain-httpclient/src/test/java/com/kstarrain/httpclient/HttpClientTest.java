@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.kstarrain.app.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -12,6 +13,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -26,6 +28,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -113,13 +116,7 @@ public class HttpClientTest {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (httpClient != null){
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    log.error("httpclient close error",e);
-                }
-            }
+            HttpClientUtils.closeQuietly(httpClient);
         }
     }
 
@@ -169,13 +166,7 @@ public class HttpClientTest {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } finally {
-            if (httpClient != null){
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    log.error("httpclient close error",e);
-                }
-            }
+            HttpClientUtils.closeQuietly(httpClient);
         }
     }
 
@@ -206,6 +197,7 @@ public class HttpClientTest {
             httpPost.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
 
 
+            log.info("请求参数：{}", params);
             // 由客户端执行(发送)Get请求
             CloseableHttpResponse response = httpClient.execute(httpPost);
 
@@ -222,13 +214,7 @@ public class HttpClientTest {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (httpClient != null){
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    log.error("httpclient close error",e);
-                }
-            }
+            HttpClientUtils.closeQuietly(httpClient);
         }
 
     }
@@ -245,19 +231,19 @@ public class HttpClientTest {
 
 
             // 创建POST请求
-            HttpPost httpPost = new HttpPost(requestUrl);
+            HttpPost httpPost = new HttpPost("http://localhost:8080/mvc/http/postMultipart");
             httpPost.setHeader("Cookie","testMethod=GET;accessToken=2c81fd43-a991-4f78-bbce-21be2054431e_105502");
             httpPost.setHeader("Authorization","authorization_" + UUID.randomUUID().toString());
             httpPost.setHeader("store",Base64.getEncoder().encodeToString("华为应用商店".getBytes("utf-8")));
 
 
-            // MultipartEntityBuilder会自动声明Content-Type为multipart/form-data
-            httpPost.setEntity(MultipartEntityBuilder.create()
-                                .addPart("userName",new StringBody("董宇", StandardCharsets.UTF_8))
-                                .addPart("key",new StringBody("1234qwer", StandardCharsets.UTF_8))
-                                .addPart("file",new FileBody(new File(readFilePath)))
-                                .build());
+            HttpEntity build = MultipartEntityBuilder.create()
+                    .addPart("userName", new StringBody("董宇", StandardCharsets.UTF_8))
+                    .addPart("key", new StringBody("1234qwer", StandardCharsets.UTF_8))
+                    .addPart("file", new FileBody(new File(readFilePath))).build();
 
+            // MultipartEntityBuilder会自动声明Content-Type为multipart/form-data
+            httpPost.setEntity(build);
 
             // 由客户端执行(发送)Get请求
             CloseableHttpResponse response = httpClient.execute(httpPost);
@@ -275,13 +261,7 @@ public class HttpClientTest {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (httpClient != null){
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    log.error("httpclient close error",e);
-                }
-            }
+            HttpClientUtils.closeQuietly(httpClient);
         }
 
 
@@ -325,7 +305,6 @@ public class HttpClientTest {
             httpPost.setHeader("store",Base64.getEncoder().encodeToString("华为应用商店".getBytes("utf-8")));
             httpPost.setHeader("Content-Type","application/json;charset=UTF-8");
 
-            // MultipartEntityBuilder会自动声明Content-Type为multipart/form-data
             httpPost.setEntity(new StringEntity(JSON.toJSONString(requestParam), "UTF-8"));
 
 
@@ -345,13 +324,7 @@ public class HttpClientTest {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (httpClient != null){
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    log.error("httpclient close error",e);
-                }
-            }
+            HttpClientUtils.closeQuietly(httpClient);
         }
 
 

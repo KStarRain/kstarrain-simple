@@ -1,12 +1,16 @@
 package com.kstarrain.utils;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -163,8 +167,17 @@ public class Excel {
 		return this;
 	}
 
-	private Object getCellValue(Cell cell) {
 
+	public Excel write(String filePath) throws IOException {
+		FileUtils.forceMkdirParent(new File(filePath));
+		try (FileOutputStream out = new FileOutputStream(filePath)){
+			workBook.write(out);
+			out.flush();
+			return this;
+		}
+	}
+
+	private Object getCellValue(Cell cell) {
 		if (cell == null) {return "";}
 
 		switch (cell.getCellType()) {
@@ -196,24 +209,29 @@ public class Excel {
 			cell.setCellValue("");
 		} else if (value instanceof String) {
 			cell.setCellValue((String)value);
-			this.autoSizeColumn(columnIndex, columnWidth, cell.getStringCellValue().getBytes().length);
+			int length = cell.getStringCellValue().getBytes().length;
+			this.autoSizeColumn(columnIndex, columnWidth, length < 20 ? length : 20);
 		} else if (value instanceof RichTextString) {
 			cell.setCellValue((RichTextString)value);
 		} else if (value instanceof Boolean) {
 			cell.setCellValue((Boolean)value);
 			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getBooleanCellValue()).getBytes().length);
 		} else if (value instanceof Date) {
-
-            CellStyle dateCellStyle = workBook.createCellStyle();
-            dateCellStyle.setDataFormat(workBook.createDataFormat().getFormat("yyyy/mm/dd HH:mm:ss"));
-            cell.setCellStyle(dateCellStyle);
-
-            cell.setCellValue((Date) value);
-			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getDateCellValue().getTime()).getBytes().length);
-		} else if (value instanceof Number) {
+			CellStyle dateCellStyle = workBook.createCellStyle();
+			dateCellStyle.setDataFormat(workBook.createDataFormat().getFormat("yyyy/mm/dd HH:mm:ss"));
+			cell.setCellStyle(dateCellStyle);
+			cell.setCellValue((Date) value);
+			this.autoSizeColumn(columnIndex, columnWidth, 20);
+		} else if (value instanceof BigDecimal) {
+			CellStyle bigDecimalCellStyle = workBook.createCellStyle();
+			bigDecimalCellStyle.setDataFormat(workBook.createDataFormat().getFormat("#,##0.00"));
+			cell.setCellStyle(bigDecimalCellStyle);
 			cell.setCellValue(((Number)value).doubleValue());
 			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getNumericCellValue()).getBytes().length);
-		}else {
+		}  else if (value instanceof Number) {
+			cell.setCellValue(((Number)value).doubleValue());
+			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getNumericCellValue()).getBytes().length);
+		} else {
 			cell.setCellValue(value.toString());
 			this.autoSizeColumn(columnIndex, columnWidth, cell.getStringCellValue().getBytes().length);
 		}

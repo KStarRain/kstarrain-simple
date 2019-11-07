@@ -96,5 +96,12 @@ public class EmptyTest {
         }
     }
 
+    @Test
+    public void test01(){
+
+        String a = null;
+        a.contains("#");
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.kstarrain.common;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -53,5 +54,16 @@ public class StringTest {
         return newString.toString();
     }
 
+
+    @Test
+    public void test2() {
+
+        String a = null;
+
+        String b = "aaa";
+
+        System.out.println(StringUtils.equals(a, b));
+//        System.out.println(a.equals(b));
+    }
 
 }
