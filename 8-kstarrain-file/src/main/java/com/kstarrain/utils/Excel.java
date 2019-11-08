@@ -218,7 +218,7 @@ public class Excel {
 			this.autoSizeColumn(columnIndex, columnWidth, String.valueOf(cell.getBooleanCellValue()).getBytes().length);
 		} else if (value instanceof Date) {
 			CellStyle dateCellStyle = workBook.createCellStyle();
-			dateCellStyle.setDataFormat(workBook.createDataFormat().getFormat("yyyy/mm/dd HH:mm:ss"));
+			dateCellStyle.setDataFormat(workBook.createDataFormat().getFormat("yyyy/MM/dd HH:mm:ss"));
 			cell.setCellStyle(dateCellStyle);
 			cell.setCellValue((Date) value);
 			this.autoSizeColumn(columnIndex, columnWidth, 20);

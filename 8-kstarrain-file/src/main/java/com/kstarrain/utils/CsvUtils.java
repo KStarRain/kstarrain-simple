@@ -88,7 +88,7 @@ public class CsvUtils {
         FileUtils.forceMkdirParent(new File(filePath));
 
         try (OutputStream out = new FileOutputStream(filePath);
-             Writer writer = new OutputStreamWriter(out,"UTF-8"); //如果是UTF-8时，WPS打开是正常显示，而微软的excel打开是乱码
+             Writer writer = new OutputStreamWriter(out,"UTF-8"); //如果是UTF-8时，WPS打开是正常显示，windows系统下用微软的excel打开是乱码
              CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withQuoteMode(QuoteMode.ALL).withHeader(title.toArray(new String[title.size()])))){
 
 
@@ -114,6 +114,20 @@ public class CsvUtils {
         }
     }
 
+
+    /**
+     * 读取csv中数据转化为bean
+     * @param inputStream            输入流
+     * @param titlePropertyMap       csv文件中标题名字与bean中属性名字的映射Map [例如： key -- 姓名;  value -- name]
+     * @param clazz                  需要转化成的bean.Class
+     * @param <T>
+     * @return
+     * @throws ReflectiveOperationException
+     * @throws ParseException
+     */
+    public static <T> List<T> readToBeans(InputStream inputStream, Map<String, String> titlePropertyMap, Class<T> clazz) throws ReflectiveOperationException, ParseException, IOException {
+        return readToBeans(inputStream, titlePropertyMap, null, clazz);
+    }
 
 
     /**
@@ -144,7 +158,17 @@ public class CsvUtils {
         try(InputStream bomIn = new BOMInputStream(inputStream);
             Reader reader = new InputStreamReader(bomIn)){
 
-            CSVParser parse = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.ALL).withHeader().parse(reader);
+            CSVParser parse;
+            try {
+                parse = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.ALL).withHeader().parse(reader);
+            } catch (IllegalArgumentException e) {
+                log.error(e.getMessage());
+                if (StringUtils.isNotBlank(e.getMessage()) && e.getMessage().startsWith("The header contains a duplicate name:")){
+                    throw new IllegalArgumentException("导入csv文件失败，可能原因：1.标题重复【请检查csv文件首行标题是否有重复内容】；2.编码异常【请尝试用记事本打开文件，另存为编码为UTF-8的csv文件重新上传】");
+                } else {
+                    throw e;
+                }
+            }
 
             Map<String, Integer> headerMap = parse.getHeaderMap();
             if (MapUtils.isEmpty(headerMap)){return new ArrayList<>();}
@@ -210,7 +234,7 @@ public class CsvUtils {
         if (value == null) {
             return "";
         } else if (value instanceof Date) {
-            return new SimpleDateFormat("yyyy/mm/dd HH:mm:ss").format((Date)value);
+            return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format((Date)value);
         } else {
             return value.toString();
         }

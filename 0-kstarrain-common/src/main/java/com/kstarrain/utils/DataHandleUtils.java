@@ -2,7 +2,6 @@ package com.kstarrain.utils;
 
 
 
-import com.kstarrain.utils.callback.PacketCallback;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -151,7 +150,7 @@ public class DataHandleUtils {
      * @param count             单组数据条数
      * @param packetCallback    单组处理数据业务函数
      */
-    public static <T> void packet(List<T> data, int count, PacketCallback<Void, List<T>> packetCallback)  {
+    public static <T> void packet(List<T> data, int count, DataPacketCallback<Void, List<T>> packetCallback)  {
 
         for (int i = 0, len = data.size() / count + 1; i < len; i++) {
             //单组数据
@@ -179,7 +178,10 @@ public class DataHandleUtils {
      * @param count             单组数据条数
      * @param packetCallback    单组处理数据业务函数
      */
-    public static <T> void packetSerialize(List<T> data, int count, PacketCallback<Void, List<T>> packetCallback)  {
+    public static <T> void packetSerialize(List<T> data, int count, DataPacketCallback<Void, List<T>> packetCallback)  {
+
+
+
 
         for (int i = 0, len = data.size() / count + 1; i < len; i++) {
             //单组数据

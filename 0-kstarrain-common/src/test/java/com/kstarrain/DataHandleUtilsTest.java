@@ -1,7 +1,6 @@
 package com.kstarrain;
 
-import com.kstarrain.utils.PageUtils;
-import com.kstarrain.utils.callback.PacketCallback;
+import com.kstarrain.utils.DataPacketCallback;
 import com.kstarrain.utils.DataHandleUtils;
 import org.junit.Test;
 
@@ -30,7 +29,7 @@ public class DataHandleUtilsTest {
 //            }
 //        });
 
-        DataHandleUtils.packetSerialize(data, 1, new PacketCallback<Void, List<String>>() {
+        DataHandleUtils.packetSerialize(data, 1, new DataPacketCallback<Void, List<String>>() {
             @Override
             public Void execute(List<String> strings) {
                 strings.set(0,"吕布");

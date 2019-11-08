@@ -39,10 +39,12 @@ public class CsvTest {
              CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withQuoteMode(QuoteMode.ALL).withHeader(title))){
 
             List<Student> students = new ArrayList<>();
-            for (int i = 1; i <= 100; i++) {
+            for (int i = 1; i <= 2; i++) {
                 students.add(TestDataUtils.createStudent1());
             }
-
+            Student student1 = TestDataUtils.createStudent1();
+            student1.setId(null);
+            students.add(student1);
 
             long start = System.currentTimeMillis();
 
@@ -117,7 +119,7 @@ public class CsvTest {
 
             long start = System.currentTimeMillis();
 
-            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withQuote(null).parse(reader).getRecords();
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.ALL).parse(reader).getRecords();
             for(CSVRecord record:records){
 
                 System.out.print(record.get(0) + "  ");

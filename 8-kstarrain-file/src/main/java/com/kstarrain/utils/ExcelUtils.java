@@ -168,8 +168,8 @@ public class ExcelUtils {
 
 
 
-    public static <T> List<T> readToBeans(Excel excel, Class<T> clazz,  Map<String, String> titlePropertyMap) throws ReflectiveOperationException, ParseException {
-        return readToBeans(excel, clazz, titlePropertyMap, null);
+    public static <T> List<T> readToBeans(Excel excel, Map<String, String> titlePropertyMap, Class<T> clazz) throws ReflectiveOperationException, ParseException {
+        return readToBeans(excel, titlePropertyMap, null, clazz);
     }
 
     /**
@@ -183,7 +183,7 @@ public class ExcelUtils {
      * @throws ReflectiveOperationException
      * @throws ParseException
      */
-    public static <T> List<T> readToBeans(Excel excel, Class<T> clazz, Map<String, String> titlePropertyMap, Map<String, DateFormat> propertyDateFormatMap) throws ReflectiveOperationException, ParseException {
+    public static <T> List<T> readToBeans(Excel excel, Map<String, String> titlePropertyMap, Map<String, DateFormat> propertyDateFormatMap, Class<T> clazz) throws ReflectiveOperationException, ParseException {
 
         Integer lastRowNum = excel.getLastRowNum();
         if (lastRowNum <= 0) {

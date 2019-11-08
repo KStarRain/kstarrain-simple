@@ -154,7 +154,7 @@ public class ExcelTest {
 
 
             Excel excel = ExcelUtils.create(path, inputStream).selectSheet(0);
-            List<Student> students = ExcelUtils.readToBeans(excel, Student.class, titlePropertyMap, propertyDateFormatMap);
+            List<Student> students = ExcelUtils.readToBeans(excel, titlePropertyMap, propertyDateFormatMap, Student.class);
 
             long end = System.currentTimeMillis();
 
