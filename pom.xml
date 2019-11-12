@@ -9,22 +9,23 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>0-kstarrain-other</module>
-        <module>0-kstarrain-common</module>
-        <module>0-kstarrain-synchronized</module>
-        <module>0-kstarrain-reflex</module>
-        <module>1-kstarrain-log4j</module>
-        <module>1-kstarrain-logback</module>
-        <module>2-kstarrain-servlet</module>
-        <module>3-kstarrain-jdbc</module>
-        <module>4-kstarrain-mybatis</module>
-        <module>5-kstarrain-proxy-jdk</module>
-        <module>5-kstarrain-proxy-cglib</module>
-        <module>6-kstarrain-redis</module>
-        <module>7-kstarrain-job-jdk</module>
-        <module>7-kstarrain-job-quartz</module>
-        <module>8-kstarrain-file</module>
-        <module>9-kstarrain-httpclient</module>
+        <module>00-kstarrain-test</module>
+		<module>01-kstarrain-log4j</module>
+        <module>02-kstarrain-logback</module>
+        <module>03-kstarrain-synchronized</module>
+        <module>04-kstarrain-reflex</module>
+        <module>05-kstarrain-common</module>
+        <module>06-kstarrain-servlet</module>
+        <module>07-kstarrain-jdbc</module>
+        <module>08-kstarrain-mybatis</module>
+        <module>09-kstarrain-proxy-jdk</module>
+        <module>10-kstarrain-proxy-cglib</module>
+        <module>11-kstarrain-redis</module>
+        <module>12-kstarrain-job-jdk</module>
+        <module>13-kstarrain-job-quartz</module>
+        <module>14-kstarrain-httpclient</module>
+        <module>15-kstarrain-file</module>
+
     </modules>
 
 
