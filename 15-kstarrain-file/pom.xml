@@ -45,7 +45,7 @@
         <!-- common 工具类-->
         <dependency>
             <groupId>com.kstarrain</groupId>
-            <artifactId>0-kstarrain-common</artifactId>
+            <artifactId>05-kstarrain-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
