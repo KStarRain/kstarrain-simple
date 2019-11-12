@@ -1,8 +1,8 @@
 package com.kstarrain.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.kstarrain.app.RequestParam;
 import com.kstarrain.response.ResultDTO;
+import com.kstarrain.vo.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
