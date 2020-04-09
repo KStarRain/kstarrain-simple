@@ -114,37 +114,41 @@ public class ExcelUtils {
      */
     public static <T> Excel createByBeans(Excel.Type excelType, List<T> beans, Map<String, String> titlePropertyMap, Map<String, DateFormat> propertyDateFormatMap) throws ReflectiveOperationException {
 
-        if (CollectionUtils.isEmpty(beans)) {
-            throw new IllegalArgumentException("Beans is empty. ");
-        }
-
         if (MapUtils.isEmpty(titlePropertyMap)) {
             throw new IllegalArgumentException("TitlePropertyMap is empty. ");
         }
 
 
-        Map<String, Method> clazzMethodMap = new HashMap<>();
-        Class<?> clazz = beans.get(0).getClass();
-        for (Method method : clazz.getMethods()) {
-            clazzMethodMap.put(method.getName(),method);
-        }
-
-        List<Method> usefulGetMethods = new ArrayList<>();
         List<Object> rowContent = new ArrayList<>();
+        List<Method> usefulGetMethods = new ArrayList<>();
 
-        for (Map.Entry<String, String> titlePropertyEntry : titlePropertyMap.entrySet()) {
-            String mehtodName = "get" + StringUtils.capitalize(titlePropertyEntry.getValue());
-            Method method = clazzMethodMap.get(mehtodName);
-            if (method != null){
-                usefulGetMethods.add(method);
-                rowContent.add(titlePropertyEntry.getKey());
-            }else {
-                throw new NoSuchMethodException("Method [" + mehtodName + "] not found in class [" + clazz.getName() + "].");
+        if (CollectionUtils.isEmpty(beans)) {
+            rowContent = new ArrayList<>(titlePropertyMap.keySet());
+        } else {
+            Map<String, Method> clazzMethodMap = new HashMap<>();
+            Class<?> clazz = beans.get(0).getClass();
+            for (Method method : clazz.getMethods()) {
+                clazzMethodMap.put(method.getName(),method);
+            }
+
+            for (Map.Entry<String, String> titlePropertyEntry : titlePropertyMap.entrySet()) {
+                String mehtodName = "get" + StringUtils.capitalize(titlePropertyEntry.getValue());
+                Method method = clazzMethodMap.get(mehtodName);
+                if (method != null){
+                    rowContent.add(titlePropertyEntry.getKey());
+                    usefulGetMethods.add(method);
+                }else {
+                    throw new NoSuchMethodException("Method [" + mehtodName + "] not found in class [" + clazz.getName() + "].");
+                }
             }
         }
 
         Excel result = create(excelType).createSheet();
         result.writeRow(0, rowContent, true);
+
+        if (CollectionUtils.isEmpty(beans)){
+            return result;
+        }
 
         for (int i = 0, len = beans.size(); i < len; i++) {
             rowContent.clear();

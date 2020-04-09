@@ -26,11 +26,48 @@ import java.util.Map;
 public class CsvTest {
 
 
-    String path = "E:" + File.separator + "test" + File.separator + "csv"  + File.separator + "学生表.csv";
+    String path = "E:" + File.separator + "test" + File.separator + "csv"  + File.separator + "学生表.txt";
 
 
     @Test
-    public void writeCsv() {
+    public void writeCsv1() {
+
+        try (OutputStream out = new FileOutputStream(path);
+             Writer writer = new OutputStreamWriter(out,"UTF-8"); //如果是UTF-8时，WPS打开是正常显示，而微软的excel打开是乱码
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT)){
+
+            List<Student> students = new ArrayList<>();
+            for (int i = 1; i <= 2; i++) {
+                students.add(TestDataUtils.createStudent1());
+            }
+
+
+
+            for(Student student : students){
+                List<String> record = new ArrayList<>();
+                record.add(student.getId());
+                record.add(student.getName());
+                record.add(student.getMoblie());
+                record.add(new SimpleDateFormat("yyyy/mm/dd HH:mm:ss").format(student.getBirthday()));
+//                record.add(student.getMoney().toString());
+                record.add(student.getMoney().toString());
+                record.add(new SimpleDateFormat("yyyy/mm/dd HH:mm:ss").format(student.getCreateDate()));
+                record.add(new SimpleDateFormat("yyyy/mm/dd HH:mm:ss").format(student.getUpdateDate()));
+                record.add(student.getAliveFlag().toString());
+                record.add(student.getIsAlive().toString());
+                csvPrinter.printRecord(record);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    @Test
+    public void writeCsv2() {
 
         String[] title ={"主键","姓名","手机","生日","余额","创建时间","更新时间","删除标记","删除标记2",};
 
@@ -84,7 +121,6 @@ public class CsvTest {
             long start = System.currentTimeMillis();
 
             CSVParser parse = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.ALL).withHeader().parse(reader);
-            Map<String, Integer> headerMap = parse.getHeaderMap();
 
             Iterable<CSVRecord> records = parse.getRecords();
 

@@ -1,6 +1,5 @@
 package com.kstarrain;
 
-import com.kstarrain.utils.PageInfo;
 import com.kstarrain.utils.PageUtils;
 import org.junit.Test;
 
@@ -25,12 +24,14 @@ public class PageUtilsTest {
         data.add("貂蝉5");
 
 
-        PageInfo<List<String>> result = PageUtils.pagingList(2, 3, data);
-        System.out.println("当前页     ：" + result.getPageNum());
+        PageUtils.PageInfo<List<String>> result = PageUtils.pagingList(2, 4, data);
         System.out.println("每页显示行数：" + result.getPageSize());
+        System.out.println("上一页     ：" + result.getPrePage());
+        System.out.println("当前页     ：" + result.getPageNum());
+        System.out.println("下一页     ：" + result.getNextPage());
         System.out.println("总页数     ：" + result.getPages());
-        System.out.println("总计数     ：" + result.getTotal());
         System.out.println("data      ：" + result.getData());
+        System.out.println("总计数     ：" + result.getTotal());
 
     }
 

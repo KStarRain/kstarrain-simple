@@ -49,6 +49,20 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- ftp/sftp -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.6</version>
+        </dependency>
+
+        <!-- sftp上传依赖包 -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.55</version>
+        </dependency>
+
     </dependencies>
 
 </project>

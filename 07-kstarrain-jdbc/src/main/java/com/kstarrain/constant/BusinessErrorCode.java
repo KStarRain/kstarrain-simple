@@ -4,7 +4,7 @@ import com.kstarrain.exception.ErrorCode;
 
 public enum BusinessErrorCode implements ErrorCode {
 
-    BUSINESS000("BUSINESS000", "系统异常"),
+    BUSINESS000("BUSINESS000", "系统异常,库存变为了负数"),
     BUSINESS001("BUSINESS001", "采购数必须为正数"),
     BUSINESS002("BUSINESS002", "商品不存在"),
     BUSINESS003("BUSINESS003", "采购量不能大于库存量"),

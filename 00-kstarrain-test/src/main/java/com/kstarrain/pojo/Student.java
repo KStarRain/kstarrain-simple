@@ -1,8 +1,8 @@
 package com.kstarrain.pojo;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,9 +12,11 @@ import java.util.Date;
  * @description:
  */
 @Data
-public class Student {
+public class Student implements Serializable {
 
-    @JSONField(serialize = false)
+    private static final long serialVersionUID = 1L;
+
+//    @JSONField(serialize = false)
     String id;
 
     String name;

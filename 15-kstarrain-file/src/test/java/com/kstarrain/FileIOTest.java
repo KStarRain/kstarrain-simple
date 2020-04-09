@@ -2,9 +2,12 @@ package com.kstarrain;
 
 import com.alibaba.fastjson.JSON;
 import com.kstarrain.utils.TestDataUtils;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: DongYu
@@ -140,5 +143,23 @@ public class FileIOTest {
             }
 
         }
+    }
+
+
+
+    @Test
+    public void writeFile1() throws IOException {
+
+        String filePath = "E:" + File.separator + "test" + File.separator + "file"  + File.separator + "file.txt";
+
+        //1:使用File类创建一个要操作的文件路径
+        File file = new File(filePath);
+
+        List<String> data = new ArrayList<>();
+//        data.add("10235|15.26|貂蝉");
+//        data.add("25647|20.26|吕布");
+
+        FileUtils.writeLines(file, "utf-8", data,false);
+
     }
 }

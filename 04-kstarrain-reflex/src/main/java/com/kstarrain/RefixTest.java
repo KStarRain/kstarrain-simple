@@ -3,7 +3,6 @@ package com.kstarrain;
 import com.kstarrain.pojo.Student;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * @author: DongYu
@@ -14,13 +13,14 @@ public class RefixTest {
 
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
 
-        Class<?> clazz = Class.forName("com.kstarrain.pojo.Student");
-        Student student = (Student) clazz.newInstance();
-        Method setIdMethod = clazz.getMethod("setId", String.class);
-        setIdMethod.invoke(student,"1");
+//        Class<?> clazz = Class.forName("com.kstarrain.pojo.Student");
+//        Student student = (Student) clazz.newInstance();
+//        Method setIdMethod = clazz.getMethod("setId", String.class);
+//        setIdMethod.invoke(student,"1");
 
 
-        System.out.println(student);
+        System.out.println(Student.class.getName());
+//        System.out.println(student);
 
     }
 }

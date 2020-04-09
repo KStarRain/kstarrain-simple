@@ -19,6 +19,7 @@ public class GoodsController{
 
         try {
             goodsService.reduceStockById(buyerId,goodsId,quantity);
+            System.out.println(buyerId + " ---> 抢到一个商品");
         } catch (BusinessException e) {
             System.out.println(buyerId + " ---> " + e.getMessage());
         } catch (Exception e) {

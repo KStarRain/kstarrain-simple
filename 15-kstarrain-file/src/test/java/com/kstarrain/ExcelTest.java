@@ -113,15 +113,15 @@ public class ExcelTest {
         titlePropertyMap.put("删除标记2","isAlive");
 
 
-        Map<String, DateFormat> propertyDateFormatMap = new LinkedHashMap<>();
-        propertyDateFormatMap.put("birthday",new SimpleDateFormat("yyyy-MM-dd"));
-        propertyDateFormatMap.put("createDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-        propertyDateFormatMap.put("updateDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+//        Map<String, DateFormat> propertyDateFormatMap = new LinkedHashMap<>();
+//        propertyDateFormatMap.put("birthday",new SimpleDateFormat("yyyy-MM-dd"));
+//        propertyDateFormatMap.put("createDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+//        propertyDateFormatMap.put("updateDate",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
 
 //        ExcelUtils.createByBeans(Excel.Type.XLS, data , titlePropertyMap, propertyDateFormatMap).write(path);
 //        ExcelUtils.createByBeans(Excel.Type.XLSX, data , titlePropertyMap, propertyDateFormatMap).write(path);
-        ExcelUtils.createByBeans(Excel.Type.LARGE_XLSX, data , titlePropertyMap, propertyDateFormatMap).write(path);
+        ExcelUtils.createByBeans(Excel.Type.LARGE_XLSX, data , titlePropertyMap).write(path);
 
         long end = System.currentTimeMillis();
         System.out.println("导出耗时 " + (end - start)/1000 + "秒" );

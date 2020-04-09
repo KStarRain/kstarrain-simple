@@ -52,15 +52,20 @@ public class RegexTest {
     @Test
     public void test4() {
 
-        Object a = null;
+        System.out.println("ZRT01".matches("[Z][R][T]\\w*$"));
+//        Object a = null;
+//
+//        if(a instanceof String){
+//            System.out.println(111);
+//        }
+//        String regex = "BoHai|[A][V][I][C][0-9]{0,2}$|[L][H][F][K]\\d*$";
+//
+//        System.out.println("EB03".matches("[E][B][0-9]{2}$"));
 
-        if(a instanceof String){
-            System.out.println(111);
-        }
-        String regex = "BoHai|[A][V][I][C][0-9]{0,2}$|[L][H][F][K]\\d*$";
 
+
+/*
         System.out.println("AVIC01".matches(regex));
-
 
         System.out.println("XITC01".matches("^X(?!1TC011)*$"));
 
@@ -73,6 +78,22 @@ public class RegexTest {
         System.out.println("XITC0".matches("^((?!(XITC01)).)*$"));
 
         System.out.println("XITC02".matches("^(?!(CQXD|AVIC01|XITC01)).*$"));
+
+        */
+
+    }
+
+
+    @Test
+    public void test5() {
+
+        System.out.println("市".matches("[^市].*"));
+        System.out.println("北京市".matches("[^市].*"));
+        System.out.println("黑龙江省".matches("([^市]+市).*"));
+        System.out.println("黑龙江省大庆市".matches("([^市]+市).*"));
+        System.out.println("上海市上海市".matches("([^市]+市).*"));
+        System.out.println("内蒙古自治区呼和浩特市新城区".matches("([^市]+市|.*?自治州).*"));
+
 
     }
 }

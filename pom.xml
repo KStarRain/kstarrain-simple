@@ -25,7 +25,9 @@
         <module>13-kstarrain-job-quartz</module>
         <module>14-kstarrain-httpclient</module>
         <module>15-kstarrain-file</module>
-
+        <module>16-kstarrain-zookeeper</module>
+        <module>09-kstarrain-hibernate</module>
+        <module>17-kstarrain-pdf</module>
     </modules>
 
 

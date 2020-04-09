@@ -3,7 +3,6 @@ package com.kstarrain.dao.impl;
 import com.kstarrain.dao.IGoodsDao;
 import com.kstarrain.pojo.Goods;
 import com.kstarrain.utils.JDBCUtils;
-import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -60,8 +59,8 @@ public class GoodsDaoImpl implements IGoodsDao {
     }
 
     @Override
-    public int reduceStockById_error(Connection conn,int quantity, String id) throws SQLException {
-        int num = 0;
+    public int reduceStockById_error(Connection conn , String id, int quantity) throws SQLException {
+        int num;
 
         PreparedStatement st = null;
 

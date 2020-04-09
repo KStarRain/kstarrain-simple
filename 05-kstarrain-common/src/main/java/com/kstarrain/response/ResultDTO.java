@@ -1,10 +1,12 @@
 package com.kstarrain.response;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
+@XStreamAlias("xml")
 public class ResultDTO<T> implements Serializable {
     private Boolean success = Boolean.TRUE;
     private String code;

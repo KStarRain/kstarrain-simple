@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory >
+        <!-- 配置数据库 -->
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/db_kstarrain?useSSL=false</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">qwer1234</property>
+
+        <!-- 配置mysql方言 -->
+        <!-- 一定要设置成5以上 -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <!-- 打印sql日志 -->
+        <property name="hibernate.show_sql">true</property>
+        <!-- 格式化sql -->
+        <property name="hibernate.format_sql">true</property>
+        <!-- 自动创建表 -->
+        <!--<property name="hibernate.hbm2ddl.auto">validate</property>-->
+
+
+    </session-factory>
+</hibernate-configuration>

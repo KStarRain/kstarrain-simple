@@ -1,7 +1,6 @@
 package com.kstarrain.httpclient;
 
 import com.alibaba.fastjson.JSON;
-import com.kstarrain.app.RequestParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.http.HttpEntity;
@@ -292,10 +291,10 @@ public class HttpClientTest {
 
 
             //POST参数  将参数信息 输出到连接中 （我方服务器 输出到 目标服务器）
-            RequestParam requestParam = new RequestParam();
-            requestParam.setUserName("吕布");
-            requestParam.setKey("1234qwer");
-            requestParam.setFile(strBase64);
+            Map<String, String> requestParam = new HashMap<>();
+            requestParam.put("userName", "吕布");
+            requestParam.put("key",      "1234qwer");
+            requestParam.put("file",     strBase64);
 
 
             // 创建POST请求

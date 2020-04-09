@@ -1,8 +1,10 @@
 package com.kstarrain.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.kstarrain.model.Student;
 import com.kstarrain.response.ResultDTO;
 import com.kstarrain.vo.RequestParam;
+import com.thoughtworks.xstream.XStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -101,13 +103,19 @@ public class HttpClientController extends HttpServlet {
         //接受 application/json;charset=UTF-8 或 application/json
         if (contentType.startsWith("application/json")){
 
-            this.parseJsonData(request,response);
+            this.parseJsonData(request);
             this.returnJsonResponse(response);
         }
         //接受 multipart/form-data; 此时通过request.getParameter获取不到值 通过commons-io和commons-fileupload进行取值
         else if (contentType.startsWith("multipart/form-data")){
 
             this.parseMultipartData(request,response);
+        }
+
+        else if (contentType.startsWith("application/xml")){
+
+            this.parseXmlData(request);
+            this.returnXmlResponse(response);
         }
         //接受 application/x-www-form-urlencoded 只有此时，request.getParameter才能获取到值
 //        if ("application/x-www-form-urlencoded".equals(contentType)){
@@ -118,6 +126,32 @@ public class HttpClientController extends HttpServlet {
 
             this.returnJsonResponse(response);
         }
+
+    }
+
+    private void returnXmlResponse(HttpServletResponse response) throws IOException {
+
+        ResultDTO resultDTO = new ResultDTO<>();
+        resultDTO.setMessage("成功");
+
+        XStream xStream = new XStream();
+        xStream.processAnnotations(ResultDTO.class);
+        String xmlStr = xStream.toXML(resultDTO);
+
+        //response
+        response.setContentType("application/xml;charset=UTF-8");
+        //返回json
+        PrintWriter writer = response.getWriter();
+        writer.write(xmlStr);
+        writer.close();
+    }
+
+    private void parseXmlData(HttpServletRequest request) throws IOException {
+
+        XStream xStream = new XStream();
+        xStream.processAnnotations(Student.class);
+        Student student = (Student)xStream.fromXML(request.getInputStream());
+        System.out.println(student);
 
     }
 
@@ -249,7 +283,7 @@ public class HttpClientController extends HttpServlet {
     }
 
     //解析json类型的数据
-    private void parseJsonData(HttpServletRequest request, HttpServletResponse response){
+    private void parseJsonData(HttpServletRequest request){
         BufferedReader reader = null;
         try {
             reader = request.getReader();

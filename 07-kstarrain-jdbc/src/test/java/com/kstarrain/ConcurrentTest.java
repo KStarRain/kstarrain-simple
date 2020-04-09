@@ -2,7 +2,6 @@ package com.kstarrain;
 
 
 import com.kstarrain.constant.BusinessErrorCode;
-import com.kstarrain.controller.GoodsController;
 import com.kstarrain.dao.IGoodsDao;
 import com.kstarrain.dao.impl.GoodsDaoImpl;
 import com.kstarrain.exception.BusinessException;
@@ -15,8 +14,6 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author: Dong Yu
@@ -57,7 +54,7 @@ public class ConcurrentTest {
                 if (quantity > goods.getStock()){throw new BusinessException(BusinessErrorCode.BUSINESS003);}
 
                 // update t_product set STOCK = STOCK - ?,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ?
-                int num = goodsDao.reduceStockById_error(conn, quantity, goodsId);
+                int num = goodsDao.reduceStockById_error(conn, goodsId, quantity);
                 System.out.println(num);
 
             }else if (goods.getStock() == 0){
@@ -101,7 +98,7 @@ public class ConcurrentTest {
                 if (quantity > goods.getStock()){throw new BusinessException(BusinessErrorCode.BUSINESS003);}
 
                 // update t_product set STOCK = STOCK - ?,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ?
-                int num = goodsDao.reduceStockById_error(conn, quantity, goodsId);
+                int num = goodsDao.reduceStockById_error(conn, goodsId, quantity);
                 System.out.println(num);
 
             }else if (goods.getStock() == 0){
@@ -238,9 +235,9 @@ public class ConcurrentTest {
             conn = JDBCUtils.getConnection();
             conn.setAutoCommit(false);
 
-            int num1 = goodsDao.reduceStockById_error(conn, quantity, goodsId1);
+            int num1 = goodsDao.reduceStockById_error(conn, goodsId1, quantity);
 
-            int num2 = goodsDao.reduceStockById_error(conn, quantity, goodsId2);
+            int num2 = goodsDao.reduceStockById_error(conn, goodsId2, quantity);
 
             conn.commit();
         } catch (Exception e) {
@@ -269,9 +266,9 @@ public class ConcurrentTest {
             conn = JDBCUtils.getConnection();
             conn.setAutoCommit(false);
 
-            int num1 = goodsDao.reduceStockById_error(conn, quantity, goodsId2);
+            int num1 = goodsDao.reduceStockById_error(conn, goodsId2, quantity);
 
-            int num2 = goodsDao.reduceStockById_error(conn, quantity, goodsId1);
+            int num2 = goodsDao.reduceStockById_error(conn, goodsId1, quantity);
 
             conn.commit();
         } catch (Exception e) {

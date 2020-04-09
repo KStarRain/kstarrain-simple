@@ -66,6 +66,7 @@ public class GoodsServiceImpl implements IGoodsService {
 
             // update t_product set STOCK = STOCK - ?,VERSION = VERSION + 1 ,UPDATE_DATE = SYSDATE() where ALIVE_FLAG = '1' and ID = ? and VERSION = ?
             int num = goodsDao.reduceStockById(conn, goodsId, quantity, goods.getVersion());
+//            int num = goodsDao.reduceStockById_error(conn, goodsId, quantity);
 
             if (num == 0){throw new BusinessException(BusinessErrorCode.BUSINESS004);}
 

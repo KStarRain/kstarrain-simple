@@ -1,7 +1,9 @@
 package com.kstarrain.jdk;
 
 import com.alibaba.fastjson.JSON;
-import com.kstarrain.app.RequestParam;
+import com.kstarrain.model.Order;
+import com.kstarrain.model.Student;
+import com.thoughtworks.xstream.XStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,10 +11,12 @@ import org.junit.Test;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -415,13 +419,119 @@ public class JdkHttpUrlTest {
 
 
             //POST参数  将参数信息 输出到连接中 （我方服务器 输出到 目标服务器）
-            RequestParam requestParam = new RequestParam();
-            requestParam.setUserName("吕布");
-            requestParam.setKey("1234qwer");
-            requestParam.setFile(strBase64);
+            Map<String, String> requestParam = new HashMap<>();
+            requestParam.put("userName", "吕布");
+            requestParam.put("key",      "1234qwer");
+            requestParam.put("file",     strBase64);
 
             out = new OutputStreamWriter(conn.getOutputStream());
             out.write(JSON.toJSONString(requestParam));
+            out.flush();
+
+
+            // 如果code为200
+            if (conn.getResponseCode() == 200) {
+
+
+                //读取连接中的返回数据, 并对输入流对象进行包装:charset根据工作项目组的要求来设置
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+                //返回的response结果
+                StringBuffer responseContent = new StringBuffer();
+                String temp;
+                // 循环遍历一行一行读取数据
+                while ((temp = reader.readLine()) != null) {
+                    responseContent.append(temp);
+                    responseContent.append("\r\n");
+                }
+                System.out.println(responseContent.toString());
+
+            }else{
+                System.out.println("错误码-" + conn.getResponseCode());
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+
+            if (conn != null){
+                conn.disconnect();
+            }
+        }
+    }
+
+
+
+    @Test
+    public void doPostXML() {
+
+        HttpURLConnection conn = null;
+
+        OutputStreamWriter out = null;
+        BufferedReader reader = null;
+
+        try {
+            URL url = new URL(requestUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(60000);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+
+            conn.setRequestProperty("Cookie","testMethod=POST;accessToken=2c81fd43-a991-4f78-bbce-21be2054431e_105502;type=香香");
+            conn.setRequestProperty("Authorization", "authorization_" + UUID.randomUUID().toString());
+            String store = Base64.getEncoder().encodeToString("华为应用商店".getBytes("utf-8"));
+            conn.setRequestProperty("store", store);
+
+
+            //application/json;charset=UTF-8
+            conn.setRequestProperty("Content-Type","application/xml");
+
+            //POST参数  将参数信息 输出到连接中 （我方服务器 输出到 目标服务器）
+            Student student1 = new Student();
+            student1.setId(UUID.randomUUID().toString().replace("-", ""));
+            student1.setName("貂蝉Mm");
+            student1.setMoney(new BigDecimal("1314.98"));
+            student1.setAliveFlag(true);
+
+            Order order1 = new Order();
+            order1.setGoodsName("上衣");
+
+            Order order2 = new Order();
+            order2.setGoodsName("裙子");
+
+            List<Order> orderList = new ArrayList<>();
+            orderList.add(order1);
+            orderList.add(order2);
+
+            student1.setOrderList(orderList);
+
+            XStream xStream = new XStream();
+            xStream.processAnnotations(Student.class);
+            String xmlStr = xStream.toXML(student1);
+
+            out = new OutputStreamWriter(conn.getOutputStream());
+            out.write(xmlStr);
             out.flush();
 
 
