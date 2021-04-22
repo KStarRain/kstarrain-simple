@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.4.4</version>
+            <version>3.5.6</version>
         </dependency>
 
         <!-- pagehelper 分页插件 源码分析：https://blog.csdn.net/u014082617/article/details/71215539/ -->
