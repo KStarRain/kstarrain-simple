@@ -38,7 +38,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <version>2.7</version>
         </dependency>
 
         <!-- 为Web应用程序或Servlet提供文件上传功能，Struts2和SpringMVC的文件上传组件。依赖包：Commons IO  解析：multipart/form-data-->
