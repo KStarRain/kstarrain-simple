@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.4.0.Final</version>
+            <version>5.4.24.Final</version>
         </dependency>
 
         <!--&lt;!&ndash; pagehelper 分页插件 源码分析：https://blog.csdn.net/u014082617/article/details/71215539/ &ndash;&gt;-->
